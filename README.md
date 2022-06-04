@@ -1,2 +1,4 @@
-# rayshaun-jeremiah-p1
-Project 1
+# Rayshaun Thompson & Jeremiah Bolden Project 1
+## Overview
+
+Employee reimbursement program
