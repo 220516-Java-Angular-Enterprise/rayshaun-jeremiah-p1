@@ -13,7 +13,7 @@ public class Users {
     String surName;
     Boolean isActive;
     Roles roles;
-    //
+
 
 
     Users(){
@@ -23,7 +23,7 @@ public class Users {
     Users(String userID, String username,String password, String email,
           String givenName, String surName, Boolean isActive, Roles roles)
 
-            //constructer for Users
+            
     {
         this.userID = userID;
         this.username = username;
