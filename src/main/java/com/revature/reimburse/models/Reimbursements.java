@@ -3,11 +3,10 @@ package com.revature.reimburse.models;
 import java.sql.Timestamp;
 import java.util.List;
 
-enum Status{PENDING, APPROVED, DENIED}
-
-enum Type{LODGING,TRAVEL, FOOD, OTHER}
 
 public class Reimbursements {
+    public enum Status{PENDING, APPROVED, DENIED}
+    public enum Type{LODGING,TRAVEL, FOOD, OTHER}
     private String reimb_id;
     private Double amount;
     private Timestamp submitted;
