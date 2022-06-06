@@ -1,18 +1,16 @@
 package com.revature.reimburse.models;
 
-enum Roles{
-    ADMIN, FINANCE_MANAGER, EMPLOYEE
-}
 
 public class Users {
-    String userID;
-    String username;
-    String password;
-    String email;
-    String givenName;
-    String surName;
-    Boolean isActive;
-    Roles roles;
+    public enum Roles{ ADMIN, FINANCE_MANAGER, EMPLOYEE }
+    private String userID;
+    private String username;
+    private String password;
+    private String email;
+    private String givenName;
+    private String surName;
+    private Boolean isActive;
+    private Roles roles;
 
 
 
