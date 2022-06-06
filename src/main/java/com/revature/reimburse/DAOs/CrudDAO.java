@@ -1,5 +1,6 @@
 package com.revature.reimburse.DAOs;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,7 +14,8 @@ public interface CrudDAO<T> {
 
     T getByID(String id) throws SQLException;
 
-    T getByEmail(String id) throws SQLException;
+    T getObject(ResultSet rs)throws SQLException;
+
 
     List<T> getAll() throws SQLException;
 

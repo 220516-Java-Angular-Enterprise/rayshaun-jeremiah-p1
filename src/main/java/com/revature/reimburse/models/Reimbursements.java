@@ -12,19 +12,19 @@ public class Reimbursements {
     private Timestamp submitted;
     private Timestamp resolved = null;
     private String description;
-    private List<Reimbursements> reciept;
+    private Integer reciept;
     private String  payment_id;
     private String author_id;
     private String resolver_id;
     private Status status;
     private Type type;
 
-    Reimbursements(){
+    public Reimbursements(){
         super();
     }
 
-    Reimbursements(String reimb_id, Double amount, Timestamp submitted, Timestamp resolved, String description,
-                   List<Reimbursements> reciept,String payment_id, String author_id, String resolver_id,Status status, Type type)
+    public Reimbursements(String reimb_id, Double amount, Timestamp submitted, Timestamp resolved, String description,
+                   Integer reciept,String payment_id, String author_id, String resolver_id,Status status, Type type)
     //This is the start of Reimbursments Constructer
     {
      this.reimb_id = reimb_id;
@@ -81,11 +81,11 @@ public class Reimbursements {
         this.description = description;
     }
 
-    public List<Reimbursements> getReciept() {
+    public Integer getReciept() {
         return reciept;
     }
 
-    public void setReciept(List<Reimbursements> reciept) {
+    public void setReciept(Integer reciept) {
         this.reciept = reciept;
     }
 
