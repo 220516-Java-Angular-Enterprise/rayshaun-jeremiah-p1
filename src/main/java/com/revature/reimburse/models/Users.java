@@ -14,11 +14,11 @@ public class Users {
 
 
 
-    Users(){
+   public Users(){
         super();
     }
 
-    Users(String userID, String username,String password, String email,
+    public Users(String userID, String username,String password, String email,
           String givenName, String surName, Boolean isActive, Roles roles)
 
             
