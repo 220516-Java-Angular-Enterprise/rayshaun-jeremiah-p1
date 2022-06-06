@@ -26,3 +26,6 @@ hs_err_pid*
 *.idea/
 *out/
 *target/
+*projectSpec.md
+*images/
+*.properties

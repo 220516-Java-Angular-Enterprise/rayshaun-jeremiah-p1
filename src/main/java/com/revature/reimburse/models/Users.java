@@ -1,4 +1,4 @@
-package com.revature.reimburse.Models;
+package com.revature.reimburse.models;
 
 enum Roles{
     ADMIN, FINANCE_MANAGER, EMPLOYEE
