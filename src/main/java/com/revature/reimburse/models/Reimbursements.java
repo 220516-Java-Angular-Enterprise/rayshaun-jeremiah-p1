@@ -1,8 +1,6 @@
-package com.revature.reimburse.Models;
+package com.revature.reimburse.models;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 enum Status{PENDING, APPROVED, DENIED}
