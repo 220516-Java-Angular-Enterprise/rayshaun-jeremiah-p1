@@ -44,19 +44,20 @@ CREATE TABLE users (
 );
 
 CREATE TABLE receipts (
-	num SERIAL PRIMARY KEY
+	num SERIAL PRIMARY KEY,
+	location VARCHAR
 );
 
 CREATE TABLE reimbursements (
 	reimb_id VARCHAR PRIMARY KEY,
 	amount DECIMAL(6,2) NOT NULL,
-	submitted TIMESTAMP NOT NULL,
+	submitted TIMESTAMP DEFAULT NOW(),
 	resolved TIMESTAMP,
 	description VARCHAR NOT NULL,
-	receipt SERIAL REFERENCES receipts(num),
+	receipt INT REFERENCES receipts(num),
 	payment_id VARCHAR,
 	author_id VARCHAR NOT NULL REFERENCES users(user_id),
 	resolver_id VARCHAR REFERENCEs users(user_id),
-	status_id REIMB_STATUS NOT NULL REFERENCES reimbursement_statuses(status),
+	status_id REIMB_STATUS DEFAULT REIMB_STATUS('PENDING') REFERENCES reimbursement_statuses(status),
 	type_id REIMB_TYPE NOT NULL REFERENCES reimbursement_types(type)
 );
