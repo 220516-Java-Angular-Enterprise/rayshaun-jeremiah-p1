@@ -98,10 +98,12 @@ public class UsersDAO implements CrudDAO<Users>{
         return null;
     }
 
-    public boolean doesUserExist(String id) throws SQLException{
+    public boolean doesUserExist(String name) throws SQLException{
         //check if username is already used
         return true;
     }
 
-
+    public boolean doesEmailExist(String mail) throws SQLException {
+        return true;
+    }
 }
