@@ -7,5 +7,6 @@ public class UI {
         RSA r = new RSA();
         System.out.printf("Primary Key P(%s,\n\t\t\t  %s)\n",
                 r.e, r.n);
+        
     }
 }
