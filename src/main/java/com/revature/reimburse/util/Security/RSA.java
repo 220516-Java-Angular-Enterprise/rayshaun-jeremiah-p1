@@ -1,14 +1,17 @@
 package com.revature.reimburse.util.Security;
 
+import com.revature.reimburse.util.CustomException.KeyCreationException;
+import com.revature.reimburse.util.CustomException.LogCreationFailedException;
+
 import java.io.*;
 import java.math.BigInteger;
+import java.security.KeyException;
+import java.sql.Date;
 import java.util.Base64;
 import java.util.Base64.*;
 import java.util.LinkedHashMap;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class RSA {
     private static final File f = new File("src/main/resources/keys/public.key");
@@ -16,9 +19,20 @@ public class RSA {
     private final Encoder encoder = Base64.getEncoder();
     private final Decoder decoder = Base64.getDecoder();
 
-    public static RSA getKey() {
-        //Logger logger = Logger.getLogger("com.revature.reimburse.util.Security.RSA");
-        //LogRecord logRec = new LogRecord(Level.FINE, "RSA");
+    public static RSA getKey() throws KeyCreationException {
+        Logger logger = Logger.getLogger("com.revature.reimburse.util.Security.RSA");
+
+        String logPath = "logs/ers."+new Date(new java.util.Date().getTime())+".log";
+
+        try {
+            FileHandler fh = new FileHandler(logPath, true);
+            fh.setFormatter(new SimpleFormatter());
+            logger.addHandler(fh);
+            logger.info("RSA C");
+            //fh.publish(new LogRecord(Level.FINE, "RSA checking"));
+        } catch(IOException ioe) {
+            throw new LogCreationFailedException("Failed to create log "+logPath);
+        } catch(SecurityException ignore) {}
 
         try(FileReader fout = new FileReader(f)) {
             f.setWritable(false, false);
@@ -39,7 +53,7 @@ public class RSA {
 
             return r;
         } catch(IOException ignore) {}
-        return null;
+        throw new KeyCreationException("Failed to create public key");
     }
 
     private RSA() {
