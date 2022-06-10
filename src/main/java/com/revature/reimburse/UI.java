@@ -9,6 +9,10 @@ import java.util.LinkedHashMap;
 
 public class UI {
     public static void main(String[] a) {
+        RSA r = new RSA();
+        System.out.printf("Primary Key P(%s,\n\t\t\t  %s)\n",
+                r.e, r.n);
+        
         try(RSA r = RSA.getKey()) {
             String sCat = r.encrypt("cat");
             System.out.println(sCat);
