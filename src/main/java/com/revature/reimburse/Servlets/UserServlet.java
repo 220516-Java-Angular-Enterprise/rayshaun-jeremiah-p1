@@ -2,7 +2,7 @@ package com.revature.reimburse.Servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.reimburse.Services.TokenService;
-import com.revature.reimburse.services.UserService;
+import com.revature.reimburse.Services.UserService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
