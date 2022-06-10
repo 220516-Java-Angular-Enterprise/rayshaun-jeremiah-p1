@@ -14,18 +14,20 @@ import java.util.List;
 public class ReceiptsDAO {
     Connection con = DatabaseConnection.getCon();
 
-    public String getRecieptByUser(Receipts receipt)throws SQLException {
+    public String getRecieptByUser(Users user)throws SQLException {
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE payment_id = ?");
-        ps.setString(1,receipt.getLocation());
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ?");
+        ps.setString(1,user.getUserID());
         ps.executeUpdate();
         ResultSet rs = ps.getResultSet();
-        receipt.setLocation(receipt.getLocation());
+
+
+        //
         if(!rs.next()){
             //noRecieptException();
         }
 
-        return receipt.getLocation();
+        return null;
     }
 
     public List<ResultSet> getAllUserReciepts(Users users)throws SQLException{

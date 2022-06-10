@@ -1,9 +1,12 @@
-package com.revature.reimburse.services;
+package com.revature.reimburse.Services;
 
 import com.revature.reimburse.DAOs.UsersDAO;
+import com.revature.reimburse.DTOs.Request.LogInRequest;
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.util.CustomException.AuthenticationException;
 import com.revature.reimburse.util.CustomException.DuplicateInputException;
 import com.revature.reimburse.util.CustomException.InvalidInputException;
+import com.revature.reimburse.util.CustomException.InvalidRequestException;
 import com.revature.reimburse.util.Security.RSA;
 
 import java.sql.SQLException;
@@ -15,6 +18,14 @@ public class UserService {
     public UserService(UsersDAO uDAO, RSA key) {
         mUserDAO = uDAO;
         mKey = key;
+    }
+
+    public Users checkUserValid(LogInRequest request){
+        Users user = new Users();
+        if(!isValidUsername(request.getUsername())|| !isValidPassword(request.getPassword())) throw new InvalidRequestException("Invalid username or password");
+        user = mUserDAO.getUserByUsernameAndPassword(request.getUsername(),request.getPassword());
+        if(user == null) throw new AuthenticationException("Invalid credentials");
+        return user;
     }
 
     public boolean isValidUsername(String name) throws InvalidInputException {

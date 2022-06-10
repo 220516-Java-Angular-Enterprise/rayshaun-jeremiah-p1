@@ -2,6 +2,7 @@ package com.revature.reimburse.Services;
 
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
 import com.revature.reimburse.models.Reimbursements;
+import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -37,7 +38,7 @@ public class TokenService {
                     .setSigningKey(jwtConfig.getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();
-            return new PrincipalNS(claims.getId(), claims.getSubject(),claims.get("role", String.class));
+            return new PrincipalNS(claims.getId(), claims.getSubject(),claims.get("roles", Users.Roles.class));
         }
         catch(Exception e){
             return null;

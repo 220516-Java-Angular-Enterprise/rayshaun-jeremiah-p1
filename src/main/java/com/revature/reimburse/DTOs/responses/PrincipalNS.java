@@ -8,15 +8,23 @@ public class PrincipalNS {
     private String id;
     private String username;
     private String role;
+    //Users.Roles roleStatus = Users.Roles.valueOf();
+
 
     public PrincipalNS(){
         super();
     }
 
-    public PrincipalNS(String id, String username, String role){
+    public PrincipalNS(Users user){
+        this.id = user.getUserID();
+        this.username = user.getUsername();
+        this.role = user.getRoles().toString();
+    }
+
+    public PrincipalNS(String id, String username, Users.Roles role){
         this.id = id;
         this.username = username;
-        this.role = role;
+        this.role = role.toString();
     }
 
     public String getId() {

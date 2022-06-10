@@ -2,6 +2,10 @@ package com.revature.reimburse.models;
 
 
 public class Users {
+
+
+
+
     public enum Roles{ ADMIN, FINANCE_MANAGER, EMPLOYEE }
     private String userID;
     private String username;
@@ -16,6 +20,24 @@ public class Users {
 
    public Users(){
         super();
+    }
+
+    public Users(String userID, String username, String password, Roles roles) {
+    this.userID = userID;
+    this.username = username;
+    this.password = password;
+    this.roles = roles;
+   }
+
+    public Users(String username, String password, Roles roles) {
+       this.username = username;
+       this.password = password;
+       this.roles = roles;
+    }
+
+    public Users(String username, String password) {
+       this.username = username;
+       this.password = password;
     }
 
     public Users(String userID, String username,String password, String email,
