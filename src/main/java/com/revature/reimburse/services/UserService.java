@@ -4,14 +4,17 @@ import com.revature.reimburse.DAOs.UsersDAO;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.DuplicateInputException;
 import com.revature.reimburse.util.CustomException.InvalidInputException;
+import com.revature.reimburse.util.Security.RSA;
 
 import java.sql.SQLException;
 
 public class UserService {
     private final UsersDAO mUserDAO;
+    private final RSA mKey;
 
-    public UserService(UsersDAO uDAO) {
+    public UserService(UsersDAO uDAO, RSA key) {
         mUserDAO = uDAO;
+        mKey = key;
     }
 
     public boolean isValidUsername(String name) throws InvalidInputException {
@@ -38,11 +41,9 @@ public class UserService {
         if(pass.matches("^(?=.*\\d+)(?=.*[a-zA-Z]+)(?!.*(.)\\1\\1).{8,}")) return true;
         throw new InvalidInputException("password");
     }
-    public String encrypt(String s) {
-        return s;
-    }
 
     public void createUser(Users u) throws SQLException {
+        u.setPassword(mKey.encrypt(u.getPassword()));
         mUserDAO.save(u);
     }
 
