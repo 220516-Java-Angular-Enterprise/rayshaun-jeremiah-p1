@@ -10,13 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public class RSA implements AutoCloseable {
+public class RSA {
     private static final File f = new File("src/main/resources/keys/public.key");
     private final String n, e;
     private final Encoder encoder = Base64.getEncoder();
     private final Decoder decoder = Base64.getDecoder();
 
-    public static RSA getKey() throws IOException {
+    public static RSA getKey() {
         //Logger logger = Logger.getLogger("com.revature.reimburse.util.Security.RSA");
         //LogRecord logRec = new LogRecord(Level.FINE, "RSA");
 
@@ -29,16 +29,17 @@ public class RSA implements AutoCloseable {
             while((c=fout.read()) != (int)'\n') { mod.append((char)c); }
 
             return new RSA(new String(exp), new String(mod));
-        } catch (IOException ex) {
-            try(FileWriter fin = new FileWriter(f)) {
-                RSA r = new RSA();
+        } catch (IOException ignore) {}
 
-                fin.append(r.e).append('\n').append(r.n).append('\n');
-                f.setWritable(false, false);
+        try(FileWriter fin = new FileWriter(f)) {
+            RSA r = new RSA();
 
-                return r;
-            }
-        }
+            fin.append(r.e).append('\n').append(r.n).append('\n');
+            f.setWritable(false, false);
+
+            return r;
+        } catch(IOException ignore) {}
+        return null;
     }
 
     private RSA() {
@@ -109,7 +110,4 @@ public class RSA implements AutoCloseable {
 
         return cypherToPlain;
     }
-
-    @Override
-    public void close() throws IOException {}
 }
