@@ -3,16 +3,19 @@ package com.revature.reimburse.DTOs.Request;
 import com.revature.reimburse.models.Users;
 
 public class NewUserRequest {
+
+
     private String username;
     private String password;
 
-    private Users.Roles role ;
+    private Users.Roles roles;
 
     public NewUserRequest() {super();}
 
-    public NewUserRequest(String username, String password, Users.Roles role){
+    public NewUserRequest(String username, String password, Users.Roles roles){
         this.username = username;
         this.password = password;
+        this.roles = roles;
     }
 
     public String getUsername() {
@@ -32,19 +35,20 @@ public class NewUserRequest {
     }
 
     public Users.Roles getRole() {
-        return role;
+        return roles;
     }
 
-    public void setRole(Users.Roles role) {
-        this.role = role;
+    public void setRole(Users.Roles roles) {
+        this.roles = roles;
     }
 
+    public Users takeUser(){return new Users(username,password,roles);}
     @Override
     public String toString() {
         return "NewUserRequest{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", role=" + role +
+                ", role=" + roles +
                 '}';
     }
 }

@@ -1,7 +1,9 @@
 package com.revature.reimburse.DAOs;
 
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.util.CustomException.InvalidSQLException;
 import com.revature.reimburse.util.database.DatabaseConnection;
+import org.postgresql.core.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -105,5 +107,26 @@ public class UsersDAO implements CrudDAO<Users>{
 
     public boolean doesEmailExist(String mail) throws SQLException {
         return true;
+    }
+
+    public Users getUserByUsernameAndPassword(String username, String password){
+        Users user = null;
+        try(Connection con = DatabaseConnection.getCon()){
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = crypt(?, password) AND role_id = ?");
+            ps.setString(1,username);
+            ps.setString(2,password);
+
+            ResultSet rs = ps.executeQuery();
+
+
+            if (rs.next()){
+                user = new Users(rs.getString("username"),rs.getString("password"));
+            }
+        }
+         catch (SQLException e) {
+            throw new InvalidSQLException("An error occured when trying to retrive for the database");
+        }
+
+        return user;
     }
 }
