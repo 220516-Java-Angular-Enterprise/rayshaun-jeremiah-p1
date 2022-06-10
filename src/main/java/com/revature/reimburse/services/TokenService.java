@@ -1,4 +1,4 @@
-package com.revature.reimburse.Services;
+package com.revature.reimburse.services;
 
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
 import com.revature.reimburse.models.Reimbursements;

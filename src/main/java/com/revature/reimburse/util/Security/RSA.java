@@ -1,27 +1,39 @@
 package com.revature.reimburse.util.Security;
 
+import com.revature.reimburse.util.CustomException.KeyCreationException;
+import com.revature.reimburse.util.CustomException.LogCreationFailedException;
+
 import java.io.*;
 import java.math.BigInteger;
+import java.security.KeyException;
+import java.sql.Date;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.*;
 import java.util.LinkedHashMap;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class RSA {
+    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     private static final File f = new File("src/main/resources/keys/public.key");
+    static {
+        String logPath = "logs/ers."+new Date(new java.util.Date().getTime())+".log";
+        try {
+            FileHandler fh = new FileHandler(logPath, true);
+            fh.setFormatter(new SimpleFormatter());
+            logger.addHandler(fh);
+        } catch(IOException | SecurityException ignore) {}
+    }
     private final String n, e;
     private final Encoder encoder = Base64.getEncoder();
     private final Decoder decoder = Base64.getDecoder();
 
     public static RSA getKey() {
-        //Logger logger = Logger.getLogger("com.revature.reimburse.util.Security.RSA");
-        //LogRecord logRec = new LogRecord(Level.FINE, "RSA");
 
         try(FileReader fout = new FileReader(f)) {
-            f.setWritable(false, false);
+            if(!f.setWritable(false, false))
+                throw new KeyCreationException("Could not lock file write privileges.");
             StringBuilder exp = new StringBuilder();
             StringBuilder mod = new StringBuilder();
             int c;
@@ -29,7 +41,16 @@ public class RSA {
             while((c=fout.read()) != (int)'\n') { mod.append((char)c); }
 
             return new RSA(new String(exp), new String(mod));
-        } catch (IOException ignore) {}
+        } catch (FileNotFoundException fnfe) {
+            logger.info("Key file does not exists. Attempting to create...");
+        } catch (KeyCreationException kce) {
+            logger.info(kce.getMessage());
+            return null;
+        } catch (IOException | SecurityException e) {
+            logger.info(e.getMessage());
+            if(!f.delete()) logger.info("\tCould not delete key file");
+            Arrays.stream(e.getStackTrace()).forEach(elem->logger.fine(String.format("\n\t%s", elem)));
+        }
 
         try(FileWriter fin = new FileWriter(f)) {
             RSA r = new RSA();
@@ -38,8 +59,12 @@ public class RSA {
             f.setWritable(false, false);
 
             return r;
-        } catch(IOException ignore) {}
-        return null;
+        } catch (IOException | SecurityException e) {
+            logger.info(e.getMessage());
+            if(!f.delete()) logger.info("\tCould not delete key file");
+            Arrays.stream(e.getStackTrace()).forEach(elem->logger.fine(String.format("\n\t%s", elem)));
+            return null;
+        }
     }
 
     private RSA() {
@@ -55,7 +80,7 @@ public class RSA {
                 exp = BigInteger.probablePrime(16, new Random());
             } while (exp.gcd(Tn).compareTo(BigInteger.ONE) != 0);
             dec = exp.modInverse(Tn);
-        } while(exp.compareTo(dec) == 0); Tn = null;
+        } while(exp.compareTo(dec) == 0); Tn = null; dec = null;
 
         this.e = encoder.encodeToString(exp.toByteArray());
         //d = encoder.encodeToString(dec.toByteArray());
