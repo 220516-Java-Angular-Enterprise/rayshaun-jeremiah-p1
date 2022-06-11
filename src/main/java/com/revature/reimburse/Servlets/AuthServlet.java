@@ -27,7 +27,7 @@ public class AuthServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try{
+        try{ //Checks if the user name is valid
             LogInRequest request = mapper.readValue(req.getInputStream(),LogInRequest.class);
             PrincipalNS principal = new PrincipalNS(userService.checkUserValid(request));
 
