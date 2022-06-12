@@ -7,6 +7,6 @@ import java.io.File;
 
 public class UI {
     public static void main(String[] a) {
-        RSA r = RSA.getKey();
+
     }
 }
