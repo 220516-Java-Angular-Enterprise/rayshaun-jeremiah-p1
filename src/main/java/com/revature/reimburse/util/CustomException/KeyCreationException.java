@@ -6,4 +6,8 @@ public class KeyCreationException extends KeyException {
     public KeyCreationException(String message) {
         super(message);
     }
+
+    public KeyCreationException(Throwable cause) {
+        super(cause);
+    }
 }
