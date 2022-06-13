@@ -2,7 +2,6 @@ package com.revature.reimburse.DAOs;
 
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
-import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.database.DatabaseConnection;
 import org.postgresql.core.ConnectionFactory;
 
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class UsersDAO implements CrudDAO<Users>{
-    private static final Logger logger = FileLogger.getLogger(UsersDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(UsersDAO.class.getName());
 
     Connection con =  DatabaseConnection.getCon();
     @Override

@@ -1,10 +1,8 @@
 package com.revature.reimburse.DAOs;
 
+import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
-import com.revature.reimburse.util.CustomException.InvalidSQLException;
-import com.revature.reimburse.util.FileLogger;
-import com.revature.reimburse.util.Security.RSA;
 import com.revature.reimburse.util.database.DatabaseConnection;
 
 import java.sql.*;
@@ -14,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ReimbursementDAO implements CrudDAO<Reimbursements> {
-    private static final Logger logger = FileLogger.getLogger(ReimbursementDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(ReimbursementDAO.class.getName());
     Connection con = DatabaseConnection.getCon();
     @Override
     public void save(Reimbursements obj) throws SQLException {
@@ -32,6 +30,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
             throw se;
         }
     }
+
 
     @Override
     public void update(Reimbursements obj) throws SQLException  {

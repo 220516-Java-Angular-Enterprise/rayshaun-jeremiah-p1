@@ -28,7 +28,7 @@ public class RequestServlet extends HttpServlet {
     private final TokenService tokenService;
     private final ReimbursementService reimbursementService;
 
-    public RequestServlet(ObjectMapper mapper, UserService userService, TokenService tokenService, ReimbursementService reimbursementService){
+    public RequestServlet(ObjectMapper mapper, UserService userService, TokenService tokenService, ReimbursementService reimbursementService) {
         this.mapper = mapper;
         this.userService = userService;
         this.tokenService = tokenService;
@@ -40,47 +40,43 @@ public class RequestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        try{
+        try {
             PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
-
-            NewUserRequest user = mapper.readValue(req.getInputStream(),NewUserRequest.class);
-            Reimbursements request = mapper.readValue(req.getInputStream(), Reimbursements.class);
+            Users user = mapper.readValue(req.getInputStream(), Users.class);
+            NewReimbursementRequest reimburseReq = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
+            //Reimbursements request = mapper.readValue(req.getInputStream(), Reimbursements.class);
             String[] uris = req.getRequestURI().split("/");
-           if(requester.getRole().equals("EMPLOYEE") ){
+            if (requester.getRole().equals("EMPLOYEE")) {
+                resp.setStatus(200);
+                if (uris.length == 5 && uris[4].equals("amount")) {
+                    PrincipalNS empRequest = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
+                    List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements(user);
+                }
+                return;
+            }
 
-               reimbursementService.createRequest(request);
+            if (requester.getRole().equals("ADMIN")) {
+                return;
+            }
 
-               resp.setStatus(201);
-               resp.setContentType("application/json");
-               resp.getWriter().write(mapper.writeValueAsString(request));
-               return;
-           }
+            if (requester.getRole().equals("FINANCE_MANAGER")) {
+                List<Reimbursements> reimbursement = reimbursementService.getAllReimbursements();
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(reimbursement));
+                return;
+            }
 
-           if(requester.getRole().equals("ADMIN")){
+          Reimbursements createdRequest = reimbursementService.createRequest(reimburseReq);
 
-               return;
-
-           }
-
-           if(requester.getRole().equals("FINANCE_MANAGER")){
-               List<Reimbursements> reimbursement = reimbursementService.getAllReimbursements();
-               resp.setContentType("application/json");
-               resp.getWriter().write(mapper.writeValueAsString(reimbursement));
-               //reimbursementService.approveRequest(reimbursement,requester.getUsername());
-
-               //reimbursementService.denyRequest(,requester.getUsername());
-
-
-               return;
-
-           }
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(createdRequest));
 
 
-
-        }
-
-        catch (InvalidRequestException e){
+        } catch (InvalidRequestException e) {
             resp.setStatus(404);
+        } catch (SQLException e) {
+            resp.setStatus(500);
+            e.printStackTrace();
         }
 
     }
@@ -89,11 +85,11 @@ public class RequestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
 
-        if(requester == null){
+        if (requester == null) {
             resp.setStatus(401);
             return;
         }
-        if(requester.getRole().equals("ADMIN")){
+        if (requester.getRole().equals("ADMIN")) {
             resp.setStatus(401);
             return;
         }
@@ -103,8 +99,7 @@ public class RequestServlet extends HttpServlet {
             List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements();
             resp.setContentType("application/json");
             resp.getWriter().write(mapper.writeValueAsString(reimbursements));
-        }
-        catch (InvalidSQLException e){
+        } catch (InvalidSQLException e) {
 
         }
 

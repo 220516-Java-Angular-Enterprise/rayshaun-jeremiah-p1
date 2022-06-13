@@ -15,10 +15,22 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class ContextLoaderListener implements ServletContextListener {
-    private static final Logger logger = FileLogger.getLogger(RSA.class.getName());
+    static {
+        try {
+            FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
+            LogManager.getLogManager().readConfiguration(logConfig);
+        } catch (IOException e) {
+            System.err.println("Could not open log configuration file. Logging not configured.");
+        }
+    }
+
+    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     public void contextInitialized(ServletContextEvent sce) {
        System.out.println("\nInitializing Reimbursement Application");
 
