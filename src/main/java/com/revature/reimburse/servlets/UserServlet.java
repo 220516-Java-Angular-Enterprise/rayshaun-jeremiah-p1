@@ -8,7 +8,6 @@ import com.revature.reimburse.Services.ReimbursementService;
 import com.revature.reimburse.Services.TokenService;
 import com.revature.reimburse.Services.UserService;
 import com.revature.reimburse.util.CustomException.InvalidRequestException;
-import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.Security.RSA;
 
 import javax.servlet.ServletException;
@@ -19,7 +18,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class UserServlet extends HttpServlet {
-    private static final Logger logger = FileLogger.getLogger(UserServlet.class.getName());
+    private static final Logger logger = Logger.getLogger(UserServlet.class.getName());
 
     private final ObjectMapper mapper;
     private final UserService userService;
