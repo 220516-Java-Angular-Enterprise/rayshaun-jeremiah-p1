@@ -1,5 +1,6 @@
 package com.revature.reimburse.DAOs;
 
+import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
@@ -32,6 +33,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
             throw se;
         }
     }
+
 
     @Override
     public void update(Reimbursements obj) throws SQLException  {

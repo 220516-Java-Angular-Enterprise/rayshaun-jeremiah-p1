@@ -27,6 +27,7 @@ C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revatur
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\Servlets\AuthServlet.java
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\util\CustomException\InvalidRequestException.java
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\DAOs\ReceiptsDAO.java
+C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\util\FileLogger.java
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\UI.java
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\DAOs\CrudDAO.java
 C:\Users\14844\Desktop\OfficialP1\rayshaun-jeremiah-p1\src\main\java\com\revature\reimburse\Services\ReceiptServices.java

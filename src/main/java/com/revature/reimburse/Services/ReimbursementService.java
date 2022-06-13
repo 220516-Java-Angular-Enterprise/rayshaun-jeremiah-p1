@@ -7,9 +7,12 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import com.revature.reimburse.DAOs.ReimbursementDAO;
+import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Reimbursements.Status;
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.util.CustomException.AuthenticationException;
+import com.revature.reimburse.util.CustomException.InvalidRequestException;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
 import com.revature.reimburse.util.FileLogger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -27,6 +30,14 @@ public class ReimbursementService {
             logger.fine("SQL Update Issue: "+se.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
         }
+    }
+    public Reimbursements createRequest(NewReimbursementRequest r) throws SQLException {
+        Reimbursements request = r.takeReimbursement();
+
+        mReimbDAO.save(request);
+        if(request == null) throw new AuthenticationException("Invalid credentials");
+        return request;
+
     }
 
     public void approveRequest(Reimbursements r, Users resolver) {
