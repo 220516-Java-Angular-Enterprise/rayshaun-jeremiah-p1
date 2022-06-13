@@ -6,6 +6,8 @@ import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.database.DatabaseConnection;
 import org.postgresql.core.ConnectionFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +22,7 @@ public class UsersDAO implements CrudDAO<Users>{
     Connection con =  DatabaseConnection.getCon();
     @Override
     public void save(Users obj) throws SQLException{
+
         try {
             PreparedStatement ps = con.prepareStatement("INSERT INTO users (user_id,username,email,password,given_name,surname,is_active,role_id) VALUES (?,?,?,?,?,?,?,?)");
             ps.setString(1, obj.getUserID());
@@ -36,6 +39,7 @@ public class UsersDAO implements CrudDAO<Users>{
             logger.info("Failed trying to save user "+obj.getUserID());
             throw se;
         }
+
     }
 
     @Override
@@ -55,6 +59,7 @@ public class UsersDAO implements CrudDAO<Users>{
             logger.info("Failed to save user "+obj.getUserID());
             throw se;
         }
+
 
     }
 
@@ -92,10 +97,14 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public Users getObject(ResultSet rs) throws SQLException {
+
+
+
         try {
             Users user = new Users();
             String roleString = rs.getString("role_id");
             Users.Roles roleStatus = Users.Roles.valueOf(roleString);
+
 
 
             user.setUserID(rs.getString("user_id:"));

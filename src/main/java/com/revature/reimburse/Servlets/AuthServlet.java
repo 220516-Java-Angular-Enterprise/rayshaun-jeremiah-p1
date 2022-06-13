@@ -31,6 +31,9 @@ public class AuthServlet extends HttpServlet {
         this.tokenService = tokenService;
     }
     @Override
+
+
+
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         logger.info("Initiating post request.");
         try{

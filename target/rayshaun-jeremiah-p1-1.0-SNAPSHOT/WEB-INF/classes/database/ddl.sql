@@ -1,0 +1,63 @@
+DROP TABLE IF EXISTS reimbursements;
+DROP TABLE IF EXISTS receipts;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS reimbursement_types;
+DROP TABLE IF EXISTS reimbursement_statuses;
+
+DROP TYPE IF EXISTS REIMB_TYPE;
+DROP TYPE IF EXISTS REIMB_STATUS;
+DROP TYPE IF EXISTS ROLES;
+
+DROP SCHEMA IF EXISTS ers;
+CREATE SCHEMA IF NOT EXISTS ers;
+SET SCHEMA 'ers';
+
+
+CREATE TYPE REIMB_STATUS AS ENUM('PENDING', 'APPROVED', 'DENIED');
+CREATE TABLE reimbursement_statuses (
+	status_id SERIAL PRIMARY KEY,
+	status REIMB_STATUS UNIQUE
+);
+
+CREATE TYPE REIMB_TYPE AS ENUM('LODGING', 'TRAVEL', 'FOOD', 'OTHER');
+CREATE TABLE reimbursement_types (
+	type_id SERIAL PRIMARY KEY,
+	type REIMB_TYPE UNIQUE
+);
+
+CREATE TYPE ROLES AS ENUM('ADMIN', 'FINANCE MANAGER', 'EMPLOYEE');
+CREATE TABLE user_roles (
+	role_id SERIAL PRIMARY KEY,
+	role ROLES UNIQUE
+); 
+
+CREATE TABLE users (
+	user_id VARCHAR PRIMARY KEY,
+	username VARCHAR NOT NULL UNIQUE,
+	email VARCHAR NOT NULL UNIQUE,
+	password VARCHAR NOT NULL,
+	given_name VARCHAR NOT NULL,
+	surname VARCHAR NOT NULL,
+	is_active BOOLEAN,
+	role_id ROLES REFERENCES user_roles(role)
+);
+
+CREATE TABLE receipts (
+	num SERIAL PRIMARY KEY,
+	location VARCHAR
+);
+
+CREATE TABLE reimbursements (
+	reimb_id VARCHAR PRIMARY KEY,
+	amount DECIMAL(6,2) NOT NULL,
+	submitted TIMESTAMP DEFAULT NOW(),
+	resolved TIMESTAMP,
+	description VARCHAR NOT NULL,
+	receipt INT REFERENCES receipts(num),
+	payment_id VARCHAR,
+	author_id VARCHAR NOT NULL REFERENCES users(user_id),
+	resolver_id VARCHAR REFERENCEs users(user_id),
+	status_id REIMB_STATUS DEFAULT REIMB_STATUS('PENDING') REFERENCES reimbursement_statuses(status),
+	type_id REIMB_TYPE NOT NULL REFERENCES reimbursement_types(type)
+);
