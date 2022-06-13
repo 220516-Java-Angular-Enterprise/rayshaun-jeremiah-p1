@@ -2,7 +2,6 @@ package com.revature.reimburse.util.Security;
 
 import com.revature.reimburse.util.CustomException.KeyCreationException;
 import com.revature.reimburse.util.CustomException.LogCreationFailedException;
-import com.revature.reimburse.util.FileLogger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.*;
@@ -16,7 +15,7 @@ import java.util.Random;
 import java.util.logging.*;
 
 public class RSA {
-    private static final Logger logger = FileLogger.getLogger(RSA.class.getName());
+    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     private final String n, e;
     private final Encoder encoder = Base64.getEncoder();
     private final Decoder decoder = Base64.getDecoder();

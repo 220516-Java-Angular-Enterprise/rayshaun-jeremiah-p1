@@ -11,11 +11,10 @@ import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Reimbursements.Status;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
-import com.revature.reimburse.util.FileLogger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class ReimbursementService {
-    private static final Logger logger = FileLogger.getLogger(ReimbursementService.class.getName());
+    private static final Logger logger = Logger.getLogger(ReimbursementService.class.getName());
     private final ReimbursementDAO mReimbDAO;
 
     public ReimbursementService(ReimbursementDAO rDAO) { mReimbDAO = rDAO; }

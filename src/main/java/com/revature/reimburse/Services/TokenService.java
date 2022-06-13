@@ -3,7 +3,6 @@ package com.revature.reimburse.Services;
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
-import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.JwtConfig;
 import com.revature.reimburse.util.Security.RSA;
 import io.jsonwebtoken.Claims;
@@ -16,7 +15,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 public class TokenService {
-    private static final Logger logger = FileLogger.getLogger(TokenService.class.getName());
+    private static final Logger logger = Logger.getLogger(TokenService.class.getName());
     private JwtConfig jwtConfig;
 
     public TokenService(){super();}

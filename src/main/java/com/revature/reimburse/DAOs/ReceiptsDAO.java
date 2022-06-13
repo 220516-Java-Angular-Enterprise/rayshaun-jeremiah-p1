@@ -2,7 +2,6 @@ package com.revature.reimburse.DAOs;
 
 import com.revature.reimburse.models.Receipts;
 import com.revature.reimburse.models.Users;
-import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.database.DatabaseConnection;
 
 import java.sql.Connection;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ReceiptsDAO {
-    private static final Logger logger = FileLogger.getLogger(ReceiptsDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(ReceiptsDAO.class.getName());
     Connection con = DatabaseConnection.getCon();
 
     public String getRecieptByUser(Users user)throws SQLException {

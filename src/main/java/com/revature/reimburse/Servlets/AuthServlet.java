@@ -7,7 +7,6 @@ import com.revature.reimburse.Services.TokenService;
 import com.revature.reimburse.Services.UserService;
 import com.revature.reimburse.util.CustomException.AuthenticationException;
 import com.revature.reimburse.util.CustomException.InvalidRequestException;
-import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.Security.RSA;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class AuthServlet extends HttpServlet {
-    private static final Logger logger = FileLogger.getLogger(AuthServlet.class.getName());
+    private static final Logger logger = Logger.getLogger(AuthServlet.class.getName());
     private final ObjectMapper mapper;
     private final UserService userService;
     private final TokenService tokenService;
