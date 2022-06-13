@@ -1,6 +1,8 @@
 package com.revature.reimburse.models;
 
 
+import com.revature.reimburse.DTOs.Request.NewUserRequest;
+
 public class Users {
 
 

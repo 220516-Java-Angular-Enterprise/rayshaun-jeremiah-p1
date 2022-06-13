@@ -6,6 +6,8 @@ import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.database.DatabaseConnection;
 import org.postgresql.core.ConnectionFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

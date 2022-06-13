@@ -3,10 +3,7 @@ package com.revature.reimburse.Services;
 import com.revature.reimburse.DAOs.UsersDAO;
 import com.revature.reimburse.DTOs.Request.LogInRequest;
 import com.revature.reimburse.models.Users;
-import com.revature.reimburse.util.CustomException.AuthenticationException;
-import com.revature.reimburse.util.CustomException.DuplicateInputException;
-import com.revature.reimburse.util.CustomException.InvalidInputException;
-import com.revature.reimburse.util.CustomException.InvalidRequestException;
+import com.revature.reimburse.util.CustomException.*;
 import com.revature.reimburse.util.Security.RSA;
 
 import java.sql.SQLException;
@@ -33,10 +30,14 @@ public class UserService {
         throw new InvalidInputException("username");
     }
 
+
+
     public boolean isDuplicateUsername(String name) throws InvalidInputException, SQLException {
         if(mUserDAO.doesUserExist(name)) throw new DuplicateInputException("username");
         return false;
     }
+
+
 
     public boolean isValidEmail(String mail) throws InvalidInputException {
         if(mail.matches("^(?![@.-]{2})(?!.*@.*@.*)[\\w.-]+@[\\w.-]\\.[a-z]{2,3}")) return true;
@@ -52,6 +53,8 @@ public class UserService {
         if(pass.matches("^(?=.*\\d+)(?=.*[a-zA-Z]+)(?!.*(.)\\1\\1).{8,}")) return true;
         throw new InvalidInputException("password");
     }
+
+
 
     public void createUser(Users u) throws SQLException {
         u.setPassword(mKey.encrypt(u.getPassword()));

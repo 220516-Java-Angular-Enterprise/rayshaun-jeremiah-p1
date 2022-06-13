@@ -31,9 +31,14 @@ public class AuthServlet extends HttpServlet {
         this.tokenService = tokenService;
     }
     @Override
+<<<<<<< HEAD
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         logger.info("Initiating post request.");
         try{
+=======
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try{ //Checks if the user name is valid
+>>>>>>> dc200a844479fe3a18b921124f69486151eb24de
             LogInRequest request = mapper.readValue(req.getInputStream(),LogInRequest.class);
             PrincipalNS principal = new PrincipalNS(userService.checkUserValid(request));
 
