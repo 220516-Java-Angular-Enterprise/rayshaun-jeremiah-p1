@@ -7,11 +7,16 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class NewReimbursementRequest {
+    enum Status{
+        PENDING, APPROVED, DENIED
+    }
+    enum Type{ LODGING, TRAVEL, FOOD, OTHER}
+
   private String reimb_id;
   private Double amount;
   private String description;
-  private Reimbursements.Type type;
-  private Reimbursements.Status status = Reimbursements.Status.PENDING;
+  private Type type;
+  private Status status = Status.PENDING;
   private String email;
   private Timestamp submitted;
   private String resolver_id;
@@ -20,7 +25,7 @@ public class NewReimbursementRequest {
         super();
     }
 
-   public NewReimbursementRequest(String reimb_id, Double amount, String description, Reimbursements.Type type,Reimbursements.Status status, String email,Timestamp submitted){
+   public NewReimbursementRequest(String reimb_id, Double amount, String description, Type type,Status status, String email,Timestamp submitted){
         this.reimb_id = reimb_id;
         this.amount = amount;
         this.description = description;
@@ -38,11 +43,11 @@ public class NewReimbursementRequest {
         this.email = email;
     }
 
-    public Reimbursements.Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Reimbursements.Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -78,11 +83,11 @@ public class NewReimbursementRequest {
         this.description = description;
     }
 
-    public Reimbursements.Type getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(Reimbursements.Type type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

@@ -1,14 +1,22 @@
 package com.revature.reimburse.DTOs.responses;
 
+import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Users;
+
+import java.sql.Timestamp;
 
 // class is called PrincipalNS because there is already a class called Principal, NS is non security
 public class PrincipalNS {
+    public enum Roles{ADMIN, FINANCE_MANAGER, EMPLOYEE}
 
     private String id;
     private String username;
-    private String role;
-    //Users.Roles roleStatus = Users.Roles.valueOf();
+    private Roles roles;
+    private Double amount;
+    private String description;
+    private Timestamp submitted;
+
+
 
 
     public PrincipalNS(){
@@ -18,13 +26,20 @@ public class PrincipalNS {
     public PrincipalNS(Users user){
         this.id = user.getUserID();
         this.username = user.getUsername();
-        this.role = user.getRoles().toString();
+        this.roles = Roles.valueOf(roles.toString());
     }
 
-    public PrincipalNS(String id, String username, Users.Roles role){
+    public PrincipalNS(String id, String username, Roles roles){
         this.id = id;
         this.username = username;
-        this.role = role.toString();
+        this.roles = roles;
+    }
+
+    public PrincipalNS(NewReimbursementRequest request){
+        this.id = request.getReimb_id();
+
+
+
     }
 
     public String getId() {
@@ -43,12 +58,12 @@ public class PrincipalNS {
         this.username = username;
     }
 
-    public String getRole() {
-        return role;
+    public Roles getRole() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(Roles role) {
+        this.roles = role;
     }
 
     @Override
@@ -56,7 +71,7 @@ public class PrincipalNS {
         return "Principal{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
-                ", role='" + role + '\'' +
+                ", role='" + roles + '\'' +
                 '}';
     }
 }

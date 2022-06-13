@@ -5,6 +5,8 @@ import com.revature.reimburse.util.CustomException.InvalidSQLException;
 import com.revature.reimburse.util.database.DatabaseConnection;
 import org.postgresql.core.ConnectionFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +19,7 @@ public class UsersDAO implements CrudDAO<Users>{
     Connection con =  DatabaseConnection.getCon();
     @Override
     public void save(Users obj) throws SQLException{
+        String roleStatus = String.valueOf(obj.getRoles());
         PreparedStatement ps = con.prepareStatement("INSERT INTO users (user_id,username,email,password,given_name,surname,is_active,role_id) VALUES (?,?,?,?,?,?,?,?)");
         ps.setString(1,obj.getUserID());
         ps.setString(2,obj.getUsername());
@@ -25,20 +28,21 @@ public class UsersDAO implements CrudDAO<Users>{
         ps.setString(5,obj.getGivenName());
         ps.setString(6,obj.getSurName());
         ps.setString(7,obj.getActive().toString());
-        ps.setString(8,obj.getRoles().toString());
+        ps.setString(8,roleStatus);
         ps.executeUpdate();
     }
 
     @Override
     public void update(Users obj) throws SQLException{
         PreparedStatement ps = con.prepareStatement("UPDATE users SET (username, email, password, give_name, surname, is_active, role_id) VALUES (?,?,?,?,?,?,?)");
+        String roleStatus = String.valueOf(obj.getRoles());
         ps.setString(1,obj.getUsername());
         ps.setString(2,obj.getEmail());
         ps.setString(3,obj.getPassword());
         ps.setString(4,obj.getGivenName());
         ps.setString(5,obj.getSurName());
         ps.setString(6,obj.getActive().toString());
-        ps.setString(7,obj.getRoles().toString());
+        ps.setString(7,roleStatus);
         ps.executeUpdate();
 
 
@@ -69,6 +73,8 @@ public class UsersDAO implements CrudDAO<Users>{
     Users user = new Users();
     String roleString = rs.getString("role_id");
     Users.Roles roleStatus = Users.Roles.valueOf(roleString);
+        //String role = String.valueOf(roleString);
+
 
 
     user.setUserID(rs.getString("user_id:"));
