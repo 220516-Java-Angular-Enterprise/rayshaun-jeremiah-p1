@@ -29,4 +29,4 @@
  *projectSpec.md
  *images/
  *.properties
- *database/
+ *.sql
