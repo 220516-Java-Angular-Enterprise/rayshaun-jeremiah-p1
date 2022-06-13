@@ -17,12 +17,10 @@ public class BigMath {
 
         d = d.nextProbablePrime();
         while(d.compareTo(n) <= 0) {
-            if(n.mod(d).compareTo(BigInteger.ZERO) != 0) {
-                d = d.nextProbablePrime();
-                continue;
+            while(n.mod(d).compareTo(BigInteger.ZERO) == 0) {
+                n = n.divide(d);
+                if(!factors.contains(d)) factors.add(d);
             }
-            while(n.mod(d).compareTo(BigInteger.ZERO) == 0) n = n.divide(d);
-            factors.add(d);
 
             d = d.nextProbablePrime();
         }

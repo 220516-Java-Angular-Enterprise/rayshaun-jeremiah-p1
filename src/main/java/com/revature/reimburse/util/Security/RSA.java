@@ -36,7 +36,7 @@ public class RSA {
                 logger.info("Keys retrieved successfully.");
                 return new RSA(new String(exp), new String(mod));
             } catch (IOException e) {
-                logger.fine("Failed to retrieve encryption key");
+                logger.info("Failed to retrieve encryption key");
                 throw new KeyCreationException(e);
             }
         }
@@ -49,7 +49,7 @@ public class RSA {
 
             return r;
         } catch (IOException | SecurityException e) {
-            logger.fine("Failed to create encryption key");
+            logger.info("Failed to create encryption key");
             throw new KeyCreationException(e);
         }
     }

@@ -51,7 +51,7 @@ public class ReimbursementService {
         try {
             return mReimbDAO.getAll();
         }  catch (SQLException se) {
-            logger.fine("Failed to gather all reimbursements");
+            logger.info("Failed to gather all reimbursements");
             throw new InvalidSQLException("Reimbursements Table\n"+se.getMessage(), se);
         }
     }
@@ -60,7 +60,7 @@ public class ReimbursementService {
         try {
             return mReimbDAO.getAllForUser(author.getUserID());
         } catch (SQLException se) {
-            logger.fine("Failed to gather reimbursement for "+author.getUserID());
+            logger.info("Failed to gather reimbursement for "+author.getUserID());
             throw new InvalidSQLException("Reimbursements Table\n"+se.getMessage(), se);
         }
     }

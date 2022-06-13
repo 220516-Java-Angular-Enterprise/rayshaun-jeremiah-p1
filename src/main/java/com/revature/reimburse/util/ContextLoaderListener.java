@@ -32,7 +32,7 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
         } catch(KeyCreationException kce) {
-            logger.info("Error on context initialization. "+kce.getMessage()+
+            logger.fine("Error on context initialization. "+kce.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(kce));
         }
         System.out.println("\nInitializing Employee Reimbursement System");
