@@ -3,15 +3,20 @@ package com.revature.reimburse.Services;
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.util.FileLogger;
 import com.revature.reimburse.util.JwtConfig;
+import com.revature.reimburse.util.Security.RSA;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public class TokenService {
+    private static final Logger logger = FileLogger.getLogger(TokenService.class.getName());
     private JwtConfig jwtConfig;
 
     public TokenService(){super();}
@@ -27,6 +32,7 @@ public class TokenService {
                 .setSubject(subject.getUsername())
                 .claim("role", subject.getRole())
                 .signWith(jwtConfig.getSigAlg(), jwtConfig.getSigningKey());
+        logger.info("Generating token for "+subject.getUsername());
         return tokenBuilder.compact();
     }
     public PrincipalNS extractRequesterDetails(String token){
@@ -41,6 +47,8 @@ public class TokenService {
             return new PrincipalNS(claims.getId(), claims.getSubject(),claims.get("roles", PrincipalNS.Roles.class));
         }
         catch(Exception e){
+            logger.fine("Failed to extract user. "+e.getMessage()+
+                    "\nTrace: "+ ExceptionUtils.getStackTrace(e));
             return null;
         }
     }

@@ -10,6 +10,7 @@ import com.revature.reimburse.Services.UserService;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.InvalidRequestException;
+import com.revature.reimburse.util.CustomException.InvalidSQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +38,7 @@ public class RequestServlet extends HttpServlet {
 
     //This is used to create a request
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try{
             PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
@@ -77,9 +78,7 @@ public class RequestServlet extends HttpServlet {
 
 
         }
-        catch(SQLException e){
-            resp.setStatus(500);
-        }
+
         catch (InvalidRequestException e){
             resp.setStatus(404);
         }
@@ -104,9 +103,9 @@ public class RequestServlet extends HttpServlet {
             List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements();
             resp.setContentType("application/json");
             resp.getWriter().write(mapper.writeValueAsString(reimbursements));
-        } catch (SQLException e) {
-            resp.setStatus(500);
-            e.printStackTrace();
+        }
+        catch (InvalidSQLException e){
+
         }
 
 
