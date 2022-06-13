@@ -1,10 +1,15 @@
 package com.revature.reimburse.models;
 
+import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 
 public class Reimbursements {
+    public Reimbursements(String author_id, NewReimbursementRequest.Status status, String reimb_id, Double amount, String description, NewReimbursementRequest.Type type, NewReimbursementRequest.Status status1, String email, Timestamp submitted) {
+    }
+
     public enum Status{PENDING, APPROVED, DENIED}
     public enum Type{LODGING,TRAVEL, FOOD, OTHER}
     private String reimb_id;

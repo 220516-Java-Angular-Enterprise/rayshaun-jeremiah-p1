@@ -3,7 +3,7 @@ package com.revature.reimburse.DTOs.Request;
 import com.revature.reimburse.models.Users;
 
 public class NewUserRequest {
-    enum Roles{ADMIN, FINANCE_MANAGER, EMPLOYEE}
+    public enum Roles{ADMIN, FINANCE_MANAGER, EMPLOYEE}
 
     private String username;
     private String password;
@@ -42,7 +42,7 @@ public class NewUserRequest {
         this.roles = roles;
     }
 
-    //public Users takeUser(){return new Users(username,password,roles);}
+    public Users takeUser(){return new Users(username,password,roles);}
     @Override
     public String toString() {
         return "NewUserRequest{" +

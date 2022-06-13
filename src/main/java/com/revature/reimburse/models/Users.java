@@ -6,7 +6,8 @@ import com.revature.reimburse.DTOs.Request.NewUserRequest;
 public class Users {
 
 
-
+    public Users(String username, String password, NewUserRequest.Roles roles) {
+    }
 
     public enum Roles{ ADMIN, FINANCE_MANAGER, EMPLOYEE }
     private String userID;
