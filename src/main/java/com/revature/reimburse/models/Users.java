@@ -1,7 +1,7 @@
 package com.revature.reimburse.models;
 
 
-//import com.revature.reimburse.DTOs.Request.NewUserRequest;
+import java.util.UUID;
 
 public class Users {
 
@@ -19,28 +19,15 @@ public class Users {
 
 
 
+    public Users() {}
 
-
-    public Users(){
-        super();
-    }
-
-    public Users(String userID, String username, String password, Roles roles) {
-    this.userID = userID;
-    this.username = username;
-    this.password = password;
-    this.roles = roles;
-   }
-
-    public Users(String username, String password, Roles roles) {
+    public Users(String username, String password, String email, String fName, String sName) {
+        userID = UUID.randomUUID().toString();
        this.username = username;
        this.password = password;
-       this.roles = roles;
-    }
-
-    public Users(String username, String password) {
-       this.username = username;
-       this.password = password;
+       this.email = email;
+       this.givenName = fName;
+       this.surName = sName;
     }
 
     public Users(String userID, String username,String password, String email,

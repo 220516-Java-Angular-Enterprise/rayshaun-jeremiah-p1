@@ -21,7 +21,7 @@ public class RSA {
     private final Decoder decoder = Base64.getDecoder();
 
     public static RSA getKey() throws KeyCreationException {
-        File f = new File("src/main/resources/keys/public.key");
+        File f = new File("src/main/resources/public.key");
 
         if (f.exists()) {
             try(FileReader fout = new FileReader(f)) {
@@ -75,6 +75,7 @@ public class RSA {
     }
 
     public String encrypt(String s) {
+        logger.info("Encryption in progress");
         StringBuilder encrypted = new StringBuilder();
         BigInteger exp = new BigInteger(decoder.decode(e));
         BigInteger mod = new BigInteger(decoder.decode(n));

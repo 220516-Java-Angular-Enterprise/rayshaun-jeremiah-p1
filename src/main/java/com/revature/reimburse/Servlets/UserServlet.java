@@ -1,14 +1,14 @@
 package com.revature.reimburse.Servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.DTOs.Request.NewUserRequest;
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
-import com.revature.reimburse.Services.ReimbursementService;
 import com.revature.reimburse.Services.TokenService;
 import com.revature.reimburse.Services.UserService;
+import com.revature.reimburse.models.Users;
+import com.revature.reimburse.util.CustomException.DuplicateInputException;
 import com.revature.reimburse.util.CustomException.InvalidRequestException;
-import com.revature.reimburse.util.Security.RSA;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,9 +33,8 @@ public class UserServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
         logger.info("Initiating post request.");
-//everything past here is added including the doGet method
+
         try{
             NewUserRequest userRequest = mapper.readValue(req.getInputStream(),NewUserRequest.class);
             String[] uris = req.getRequestURI().split("/");
@@ -68,10 +67,20 @@ public class UserServlet extends HttpServlet {
                     return;
                 }
             }
+            logger.info("Requesting to create new user.");
+            Users createdUser = userService.register(userRequest);
+            resp.setStatus(201);
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(createdUser.getUserID()));
 
         }
         catch (InvalidRequestException e){
             resp.setStatus(404);
+            logger.fine(e.getMessage()+ ExceptionUtils.getStackTrace(e));
+        }
+        catch (DuplicateInputException de) {
+            resp.setStatus(409);
+            logger.fine(de.getMessage());
         }
         catch(Exception e){
             e.printStackTrace();
@@ -81,6 +90,6 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        resp.getWriter().write("<h1>Users works!</h1>");
     }
 }

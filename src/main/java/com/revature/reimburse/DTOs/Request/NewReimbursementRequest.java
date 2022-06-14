@@ -7,17 +7,14 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class NewReimbursementRequest {
-    public enum Status{
-        PENDING, APPROVED, DENIED
-    }
-    public enum Type{ LODGING, TRAVEL, FOOD, OTHER}
+
 
     private String author_id;
     private String reimb_id;
     private Double amount;
     private String description;
-    private Type type;
-    private Status status = Status.PENDING;
+    private Reimbursements.Type type;
+    private Reimbursements.Status status = Reimbursements.Status.PENDING;
     private String email;
     private Timestamp submitted;
 
@@ -28,7 +25,7 @@ public class NewReimbursementRequest {
 
 
 
-   public NewReimbursementRequest(String reimb_id,String author_id, Double amount, String description, Type type,Status status, String email,Timestamp submitted){
+   public NewReimbursementRequest(String reimb_id,String author_id, Double amount, String description, Reimbursements.Type type,Reimbursements.Status status, String email,Timestamp submitted){
        this.author_id = author_id;
        this.reimb_id = reimb_id;
         this.amount = amount;
@@ -55,11 +52,11 @@ public class NewReimbursementRequest {
         this.email = email;
     }
 
-    public Status getStatus() {
+    public Reimbursements.Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(Reimbursements.Status status) {
         this.status = status;
     }
 
@@ -87,11 +84,11 @@ public class NewReimbursementRequest {
         this.description = description;
     }
 
-    public Type getType() {
+    public Reimbursements.Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(Reimbursements.Type type) {
         this.type = type;
     }
 
@@ -103,13 +100,12 @@ public class NewReimbursementRequest {
         this.submitted = submitted;
     }
 
-    public Reimbursements takeReimbursement(){ return new Reimbursements(author_id, status,
+    public Reimbursements takeReimbursement(){ return new Reimbursements(author_id,
         reimb_id,
          amount,
          description,
          type,
          status,
-         email,
          submitted);}
 
     @Override

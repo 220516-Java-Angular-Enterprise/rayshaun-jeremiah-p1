@@ -21,17 +21,15 @@ public class UsersDAO implements CrudDAO<Users>{
     Connection con =  DatabaseConnection.getCon();
     @Override
     public void save(Users obj) throws SQLException{
+        logger.info("Saving user " + obj.getUserID());
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO users (user_id,username,email,password,given_name,surname,is_active,role_id) VALUES (?,?,?,?,?,?,?,?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO users (user_id,username,email,password,given_name,surname) VALUES (?,?,?,?,?,?)");
             ps.setString(1, obj.getUserID());
             ps.setString(2, obj.getUsername());
             ps.setString(3, obj.getEmail());
             ps.setString(4, obj.getPassword());
             ps.setString(5, obj.getGivenName());
             ps.setString(6, obj.getSurName());
-            ps.setString(7, obj.getActive().toString());
-            ps.setString(8, obj.getRoles().toString());
-            logger.info("Saving user " + obj.getUserID());
             ps.executeUpdate();
         } catch(SQLException se) {
             logger.info("Failed trying to save user "+obj.getUserID());
@@ -42,14 +40,19 @@ public class UsersDAO implements CrudDAO<Users>{
     @Override
     public void update(Users obj) throws SQLException{
         try {
-            PreparedStatement ps = con.prepareStatement("UPDATE users SET (username, email, password, give_name, surname, is_active, role_id) VALUES (?,?,?,?,?,?,?)");
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE users SET\n" +
+                            "(username, email, password, given_name, surname, is_active, role_id) =\n" +
+                            "(?,?,?,?,?,?,?)\n" +
+                            "WHERE user_id = ?");
             ps.setString(1, obj.getUsername());
             ps.setString(2, obj.getEmail());
             ps.setString(3, obj.getPassword());
             ps.setString(4, obj.getGivenName());
             ps.setString(5, obj.getSurName());
-            ps.setString(6, obj.getActive().toString());
-            ps.setString(7, obj.getRoles().toString());
+            ps.setBoolean(6, obj.getActive());
+            ps.setString(7, obj.getRoles().name());
+            ps.setString(8, obj.getUserID());
             logger.info("Attempting to save user "+obj.getUserID());
             ps.executeUpdate();
         } catch(SQLException se) {
@@ -75,39 +78,35 @@ public class UsersDAO implements CrudDAO<Users>{
     @Override
     public Users getByID(String id) throws SQLException {
         try {
-            Users user = new Users();
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE (user_id) = (?)");
             ps.setString(1, id);
             ps.executeUpdate();
             ResultSet rs = ps.getResultSet();
             logger.info("Gathering user " + id);
-            if (!rs.next()) {
-                //noUserDataException();
+            if (rs.next()) {
+                return getObject(rs);
             }
-            return user;
         } catch(SQLException se) {
             logger.info("Failed to retrieve user "+id);
             throw se;
         }
+        return  null;
     }
 
     @Override
     public Users getObject(ResultSet rs) throws SQLException {
         try {
             Users user = new Users();
-            String roleString = rs.getString("role_id");
-            Users.Roles roleStatus = Users.Roles.valueOf(roleString);
 
-
-            user.setUserID(rs.getString("user_id:"));
+            user.setUserID(rs.getString("user_id"));
+            logger.info("Creating user "+user.getUserID());
             user.setUsername(rs.getString("username"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
             user.setGivenName(rs.getString("given_name"));
             user.setSurName(rs.getString("surname"));
             user.setActive(rs.getBoolean("is_active"));
-            user.setRoles(roleStatus);
-            logger.info("Creating user "+user.getUserID());
+            user.setRoles(Users.Roles.valueOf(rs.getString("role_id")));
             return user;
         } catch(SQLException se) {
             logger.info("Failed to create user");
@@ -138,19 +137,44 @@ public class UsersDAO implements CrudDAO<Users>{
         return null;
     }
 
-    public boolean doesUserExist(String name) throws SQLException{
-        //check if username is already used
-        return true;
+    public boolean doesUserExist(String name) {
+        ResultSet rs = null;
+
+        try (PreparedStatement stmt = con.prepareStatement(
+                "SELECT * FROM users WHERE username = ?;")
+        ) {
+           stmt.setString(1, name);
+           rs = stmt.executeQuery();
+           if(rs.next() && name.equals(rs.getString("username")))
+               return true;
+        } catch(SQLException ignore) {}
+        finally {
+            try {if(rs != null) rs.close();}
+            catch(SQLException ignore){}
+        }
+        return false;
+
     }
 
     public boolean doesEmailExist(String mail) throws SQLException {
-        return true;
+        ResultSet rs = null;
+
+        try (PreparedStatement stmt = con.prepareStatement(
+                "SELECT * FROM users WHERE email = ?;")
+        ) {
+            stmt.setString(1, mail);
+            rs = stmt.executeQuery();
+            if(rs.next() && mail.equals(rs.getString("email")))
+                return true;
+        } finally {
+            if(rs != null) rs.close();
+        }
+        return false;
     }
 
     public Users getUserByUsernameAndPassword(String username, String password){
-        Users user = null;
         try(Connection con = DatabaseConnection.getCon()){
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = crypt(?, password) AND role_id = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
             ps.setString(1,username);
             ps.setString(2,password);
 
@@ -158,13 +182,13 @@ public class UsersDAO implements CrudDAO<Users>{
 
 
             if (rs.next()){
-                user = new Users(rs.getString("username"),rs.getString("password"));
+                return getObject(rs);
             }
         }
          catch (SQLException e) {
             throw new InvalidSQLException("An error occured when trying to retrive for the database");
         }
 
-        return user;
+        return null;
     }
 }
