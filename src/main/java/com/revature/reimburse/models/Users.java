@@ -1,13 +1,11 @@
 package com.revature.reimburse.models;
 
 
-import com.revature.reimburse.DTOs.Request.NewUserRequest;
+//import com.revature.reimburse.DTOs.Request.NewUserRequest;
 
 public class Users {
 
 
-    public Users(String username, String password, NewUserRequest.Roles roles) {
-    }
 
     public enum Roles{ ADMIN, FINANCE_MANAGER, EMPLOYEE }
     private String userID;
@@ -21,7 +19,9 @@ public class Users {
 
 
 
-   public Users(){
+
+
+    public Users(){
         super();
     }
 
