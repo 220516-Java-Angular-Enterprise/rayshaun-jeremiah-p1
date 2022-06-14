@@ -41,7 +41,7 @@ public class ContextLoaderListener implements ServletContextListener {
         try {
             UserServlet userServlet = new UserServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
             AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
-            RequestServlet reqServlet = new RequestServlet(mapper,new ReimbursementService(new ReimbursementDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
+            RequestServlet reqServlet = new RequestServlet(mapper, new ReimbursementService(new ReimbursementDAO()),new TokenService(new JwtConfig()));
             ServletContext context = sce.getServletContext();
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");

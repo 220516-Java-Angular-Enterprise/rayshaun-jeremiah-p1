@@ -28,7 +28,7 @@ public class RequestServlet extends HttpServlet {
     private final TokenService tokenService;
     private final ReimbursementService reimbursementService;
 
-    public RequestServlet(ObjectMapper mapper, TokenService tokenService, ReimbursementService reimbursementService) {
+    public RequestServlet(ObjectMapper mapper, ReimbursementService reimbursementService,TokenService tokenService) {
         this.mapper = mapper;
 
         this.tokenService = tokenService;
@@ -36,12 +36,8 @@ public class RequestServlet extends HttpServlet {
         this.reimbursementService = reimbursementService;
     }
 
-    public RequestServlet(ObjectMapper mapper, ReimbursementService reimbursementService, TokenService tokenService) {
-        this.mapper = mapper;
-        this.reimbursementService = reimbursementService;
-        this.tokenService = tokenService;
 
-    }
+
 
 
 
