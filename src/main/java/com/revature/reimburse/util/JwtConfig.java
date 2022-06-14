@@ -13,7 +13,7 @@ public class JwtConfig {
     private final String salt = "1234egdhrt";
     private int expiration = 60 * 60 * 1000;
 
-    private final SignatureAlgorithm sigAlg = SignatureAlgorithm.ES256;
+    private final SignatureAlgorithm sigAlg = SignatureAlgorithm.HS256;
     private final Key signingKey;
 
     public JwtConfig(){

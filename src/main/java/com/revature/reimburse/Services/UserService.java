@@ -9,6 +9,7 @@ import com.revature.reimburse.util.Security.RSA;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +56,8 @@ public class UserService {
         return null;
     }
 
-    public Users checkUserValid(LogInRequest request){
+    public Users checkUserValid(LogInRequest request)
+            throws InvalidSQLException, AuthenticationException {
         if(!isValidUsername(request.getUsername())|| !isValidPassword(request.getPassword())) throw new InvalidRequestException("Invalid username or password");
         Users user = mUserDAO.getUserByUsernameAndPassword(request.getUsername(),mKey.encrypt(request.getPassword()));
         if(user == null) throw new AuthenticationException("Invalid credentials");
@@ -107,5 +109,9 @@ public class UserService {
     public void updateUser(Users u) throws SQLException {
         u.setPassword(mKey.encrypt(u.getPassword()));
         mUserDAO.update(u);
+    }
+
+    public List<Users> viewUsers() throws SQLException {
+        return mUserDAO.getAll();
     }
 }
