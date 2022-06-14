@@ -46,15 +46,15 @@ public class AuthServlet extends HttpServlet {
 
         }
        catch(InvalidRequestException e){
-            logger.fine(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
+            logger.warning(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
             resp.setStatus(404);
 
        }
         catch (AuthenticationException e){
-            logger.fine(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
+            logger.warning(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
         }
         catch(Exception e){
-            logger.fine(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
+            logger.warning(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
             resp.setStatus(500);
         }
     }

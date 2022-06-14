@@ -9,10 +9,12 @@ import com.revature.reimburse.util.Security.RSA;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UserService {
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
+
     private final UsersDAO mUserDAO;
     private final RSA mKey;
 
@@ -38,16 +40,16 @@ public class UserService {
                 logger.info("New user saved to system.");
                 return u;
             }
-        } catch(AssertionError err) {
-            logger.finer("Names are empty "+ExceptionUtils.getStackTrace(err));
-        }catch(DuplicateInputException die) {
-            logger.fine("Duplicate information exists.");
+        } catch(DuplicateInputException die) {
+            logger.warning("Duplicate information exists.");
             throw die;
         } catch (InvalidInputException ie) {
-            logger.fine("Error with user input");
+            logger.warning("Error with user input");
             throw new InvalidRequestException(ie.getMessage());
-        } catch (SQLException se){
-            logger.fine("SQL Issue. "+se.getMessage()+" Trace:\n"+ ExceptionUtils.getStackTrace(se));
+        }catch(AssertionError err) {
+            logger.warning("Names are empty "+ExceptionUtils.getStackTrace(err));
+        }  catch (SQLException se){
+            logger.warning("SQL Issue. "+se.getMessage()+" Trace:\n"+ ExceptionUtils.getStackTrace(se));
         }
 
         return null;

@@ -19,10 +19,15 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Date;
+import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class ContextLoaderListener implements ServletContextListener {
+    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     static {
         try {
             FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
@@ -32,7 +37,6 @@ public class ContextLoaderListener implements ServletContextListener {
         }
     }
 
-    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     public void contextInitialized(ServletContextEvent sce) {
        System.out.println("\nInitializing Reimbursement Application");
 
@@ -47,10 +51,10 @@ public class ContextLoaderListener implements ServletContextListener {
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
             context.addServlet("RequestServlet", reqServlet).addMapping("/request");
         } catch(KeyCreationException kce) {
-            logger.fine("Error on context initialization. "+kce.getMessage()+
+            logger.warning("Error on context initialization. "+kce.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(kce));
         }
-        logger.info("Initialization successful.");
+        logger.info("\n\nInitialization successful.\n");
     }
 
     @Override

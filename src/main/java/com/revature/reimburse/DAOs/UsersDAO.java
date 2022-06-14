@@ -145,6 +145,7 @@ public class UsersDAO implements CrudDAO<Users>{
         ) {
            stmt.setString(1, name);
            rs = stmt.executeQuery();
+           logger.info("Querying for "+name);
            if(rs.next() && name.equals(rs.getString("username")))
                return true;
         } catch(SQLException ignore) {}
