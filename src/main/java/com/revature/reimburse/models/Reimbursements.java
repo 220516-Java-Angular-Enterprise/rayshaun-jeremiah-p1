@@ -7,8 +7,9 @@ import java.util.List;
 
 
 public class Reimbursements {
-    public Reimbursements(String author_id, NewReimbursementRequest.Status status, String reimb_id, Double amount, String description, NewReimbursementRequest.Type type, NewReimbursementRequest.Status status1, String email, Timestamp submitted) {
-    }
+
+
+
 
     public enum Status{PENDING, APPROVED, DENIED}
     public enum Type{LODGING,TRAVEL, FOOD, OTHER}
@@ -26,6 +27,18 @@ public class Reimbursements {
 
     public Reimbursements(){
         super();
+    }
+
+    public Reimbursements(String author_id, String reimb_id, Double amount, String description, Type type, Status status,  Timestamp submitted) {
+        this.author_id = author_id;
+        this.reimb_id = reimb_id;
+        this.amount = amount;
+        this.description = description;
+        this.type = type;
+        this.status = status;
+        this.submitted = submitted;
+
+
     }
 
     public Reimbursements(String reimb_id, Double amount, Timestamp submitted, Timestamp resolved, String description,
