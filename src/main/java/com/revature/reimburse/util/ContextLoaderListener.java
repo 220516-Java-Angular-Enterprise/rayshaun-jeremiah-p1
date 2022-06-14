@@ -1,10 +1,13 @@
 package com.revature.reimburse.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.reimburse.DAOs.ReimbursementDAO;
 import com.revature.reimburse.DAOs.UsersDAO;
+import com.revature.reimburse.Services.ReimbursementService;
 import com.revature.reimburse.Services.TokenService;
 import com.revature.reimburse.Services.UserService;
 import com.revature.reimburse.Servlets.AuthServlet;
+import com.revature.reimburse.Servlets.RequestServlet;
 import com.revature.reimburse.Servlets.UserServlet;
 import com.revature.reimburse.util.CustomException.KeyCreationException;
 import com.revature.reimburse.util.Security.RSA;
@@ -38,10 +41,11 @@ public class ContextLoaderListener implements ServletContextListener {
         try {
             UserServlet userServlet = new UserServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
             AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
-
+            RequestServlet reqServlet = new RequestServlet(mapper,new ReimbursementService(new ReimbursementDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
             ServletContext context = sce.getServletContext();
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
+            context.addServlet("RequestServlet", reqServlet).addMapping("/request");
         } catch(KeyCreationException kce) {
             logger.fine("Error on context initialization. "+kce.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(kce));

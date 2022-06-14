@@ -24,17 +24,26 @@ import java.util.List;
 public class RequestServlet extends HttpServlet {
 
     private final ObjectMapper mapper;
-    private final UserService userService;
+
     private final TokenService tokenService;
     private final ReimbursementService reimbursementService;
 
-    public RequestServlet(ObjectMapper mapper, UserService userService, TokenService tokenService, ReimbursementService reimbursementService) {
+    public RequestServlet(ObjectMapper mapper, TokenService tokenService, ReimbursementService reimbursementService) {
         this.mapper = mapper;
-        this.userService = userService;
+
         this.tokenService = tokenService;
 
         this.reimbursementService = reimbursementService;
     }
+
+    public RequestServlet(ObjectMapper mapper, ReimbursementService reimbursementService, TokenService tokenService) {
+        this.mapper = mapper;
+        this.reimbursementService = reimbursementService;
+        this.tokenService = tokenService;
+
+    }
+
+
 
     //This is used to create a request
     @Override
@@ -48,11 +57,13 @@ public class RequestServlet extends HttpServlet {
             String[] uris = req.getRequestURI().split("/");
             if (requester.getRole().equals("EMPLOYEE")) {
                 resp.setStatus(200);
-                if (uris.length == 5 && uris[4].equals("amount")) {
+
                     PrincipalNS empRequest = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
                     List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements(user);
-                }
-                return;
+                    resp.getWriter().write(mapper.writeValueAsString(reimbursements));
+                    return;
+
+
             }
 
             if (requester.getRole().equals("ADMIN")) {
@@ -66,8 +77,8 @@ public class RequestServlet extends HttpServlet {
                 return;
             }
 
-          Reimbursements createdRequest = reimbursementService.createRequest(reimburseReq);
-
+             Reimbursements createdRequest = reimbursementService.createRequest(reimburseReq);
+            resp.setStatus(201);
             resp.setContentType("application/json");
             resp.getWriter().write(mapper.writeValueAsString(createdRequest));
 
@@ -83,6 +94,8 @@ public class RequestServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
         PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
 
         if (requester == null) {
@@ -102,6 +115,12 @@ public class RequestServlet extends HttpServlet {
         } catch (InvalidSQLException e) {
 
         }
+
+        //***test***
+        List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements();
+        resp.setContentType("application/json");
+        resp.getWriter().write(mapper.writeValueAsString(reimbursements));
+
 
 
     }
