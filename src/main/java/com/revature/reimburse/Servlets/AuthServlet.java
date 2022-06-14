@@ -52,6 +52,7 @@ public class AuthServlet extends HttpServlet {
        }
         catch (AuthenticationException e){
             logger.warning(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
+            resp.setStatus(401);
         }
         catch(Exception e){
             logger.warning(e.getMessage()+"\nTrace: "+ ExceptionUtils.getStackTrace(e));
