@@ -1,21 +1,25 @@
 package com.revature.reimburse.DTOs.Request;
 
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.models.Users.Roles;
 
 public class NewUserRequest {
 
 
     private String username;
+    private String email;
     private String password;
-
-    private Users.Roles roles;
+    private String givenName;
+    private String surName;
 
     public NewUserRequest() {super();}
 
-    public NewUserRequest(String username, String password, Users.Roles roles){
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
+    public NewUserRequest(String uName, String eMail, String pWord, String fName, String sName){
+        username = uName;
+        password = pWord;
+        email = eMail;
+        givenName = fName;
+        surName = sName;
     }
 
     public String getUsername() {
@@ -26,6 +30,14 @@ public class NewUserRequest {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -34,21 +46,27 @@ public class NewUserRequest {
         this.password = password;
     }
 
-    public Users.Roles getRole() {
-        return roles;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setRole(Users.Roles roles) {
-        this.roles = roles;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
-    public Users takeUser(){return new Users(username,password,roles);}
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
+    }
+
+    public Users takeUser(){return new Users(username, password, email, givenName, surName);}
     @Override
     public String toString() {
-        return "NewUserRequest{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + roles +
-                '}';
+        return String.format("NewUserRequest{" +
+                "username='%s', email='%s', password='******', full_name='%s'}",
+                username, email, givenName.concat(surName));
     }
 }

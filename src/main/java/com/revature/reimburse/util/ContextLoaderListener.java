@@ -9,7 +9,6 @@ import com.revature.reimburse.Servlets.UserServlet;
 import com.revature.reimburse.util.CustomException.KeyCreationException;
 import com.revature.reimburse.util.Security.RSA;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-//import com.revature.reimburse.Services.UserService;
 
 
 import javax.servlet.ServletContext;
@@ -26,7 +25,7 @@ public class ContextLoaderListener implements ServletContextListener {
             FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
             LogManager.getLogManager().readConfiguration(logConfig);
         } catch (IOException e) {
-            System.err.println("Could not open log configuration file. Logging not configured.");
+            System.err.println("[WARNING]: Could not open log configuration file. Logging not configured.");
         }
     }
 
@@ -47,7 +46,7 @@ public class ContextLoaderListener implements ServletContextListener {
             logger.fine("Error on context initialization. "+kce.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(kce));
         }
-        System.out.println("\nInitializing Employee Reimbursement System");
+        logger.info("Initialization successful.");
     }
 
     @Override

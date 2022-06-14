@@ -8,7 +8,6 @@ import java.util.Date;
 
 public class NewReimbursementRequest {
 
-    public enum Type{ LODGING, TRAVEL, FOOD, OTHER}
 
     private String author_id;
     private String reimb_id;

@@ -2,12 +2,12 @@ package com.revature.reimburse.DTOs.responses;
 
 import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Users;
+import com.revature.reimburse.models.Users.Roles;
 
 import java.sql.Timestamp;
 
 // class is called PrincipalNS because there is already a class called Principal, NS is non security
 public class PrincipalNS {
-    public enum Roles{ADMIN, FINANCE_MANAGER, EMPLOYEE}
 
     private String id;
     private String username;
@@ -26,20 +26,13 @@ public class PrincipalNS {
     public PrincipalNS(Users user){
         this.id = user.getUserID();
         this.username = user.getUsername();
-        this.roles = Roles.valueOf(roles.toString());
+        this.roles = user.getRoles();
     }
 
     public PrincipalNS(String id, String username, Roles roles){
         this.id = id;
         this.username = username;
         this.roles = roles;
-    }
-
-    public PrincipalNS(NewReimbursementRequest request){
-        this.id = request.getReimb_id();
-
-
-
     }
 
     public String getId() {
