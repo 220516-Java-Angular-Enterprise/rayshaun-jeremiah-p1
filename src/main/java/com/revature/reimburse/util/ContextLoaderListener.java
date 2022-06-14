@@ -1,10 +1,13 @@
 package com.revature.reimburse.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.reimburse.DAOs.ReimbursementDAO;
 import com.revature.reimburse.DAOs.UsersDAO;
+import com.revature.reimburse.Services.ReimbursementService;
 import com.revature.reimburse.Services.TokenService;
 import com.revature.reimburse.Services.UserService;
 import com.revature.reimburse.Servlets.AuthServlet;
+import com.revature.reimburse.Servlets.RequestServlet;
 import com.revature.reimburse.Servlets.UserServlet;
 import com.revature.reimburse.util.CustomException.KeyCreationException;
 import com.revature.reimburse.util.Security.RSA;
@@ -16,10 +19,15 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Date;
+import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class ContextLoaderListener implements ServletContextListener {
+    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     static {
         try {
             FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
@@ -29,7 +37,6 @@ public class ContextLoaderListener implements ServletContextListener {
         }
     }
 
-    private static final Logger logger = Logger.getLogger(RSA.class.getName());
     public void contextInitialized(ServletContextEvent sce) {
        System.out.println("\nInitializing Reimbursement Application");
 
@@ -38,15 +45,16 @@ public class ContextLoaderListener implements ServletContextListener {
         try {
             UserServlet userServlet = new UserServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
             AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
-
+            RequestServlet reqServlet = new RequestServlet(mapper,new ReimbursementService(new ReimbursementDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
             ServletContext context = sce.getServletContext();
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
             context.addServlet("AuthServlet", authServlet).addMapping("/auth");
+            context.addServlet("RequestServlet", reqServlet).addMapping("/request");
         } catch(KeyCreationException kce) {
-            logger.fine("Error on context initialization. "+kce.getMessage()+
+            logger.warning("Error on context initialization. "+kce.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(kce));
         }
-        logger.info("Initialization successful.");
+        logger.info("\n\nInitialization successful.\n");
     }
 
     @Override

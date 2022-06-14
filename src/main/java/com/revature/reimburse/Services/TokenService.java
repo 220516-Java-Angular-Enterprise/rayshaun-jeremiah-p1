@@ -46,7 +46,7 @@ public class TokenService {
             return new PrincipalNS(claims.getId(), claims.getSubject(),claims.get("roles", Users.Roles.class));
         }
         catch(Exception e){
-            logger.fine("Failed to extract user. "+e.getMessage()+
+            logger.warning("Failed to extract user. "+e.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(e));
             return null;
         }

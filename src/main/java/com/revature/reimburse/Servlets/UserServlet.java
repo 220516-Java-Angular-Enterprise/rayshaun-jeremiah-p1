@@ -75,12 +75,12 @@ public class UserServlet extends HttpServlet {
 
         }
         catch (InvalidRequestException e){
+            logger.warning(e.getMessage()+ ExceptionUtils.getStackTrace(e));
             resp.setStatus(404);
-            logger.fine(e.getMessage()+ ExceptionUtils.getStackTrace(e));
         }
         catch (DuplicateInputException de) {
+            logger.warning(de.getMessage());
             resp.setStatus(409);
-            logger.fine(de.getMessage());
         }
         catch(Exception e){
             e.printStackTrace();
