@@ -24,17 +24,26 @@ import java.util.List;
 public class RequestServlet extends HttpServlet {
 
     private final ObjectMapper mapper;
-    private final UserService userService;
+
     private final TokenService tokenService;
     private final ReimbursementService reimbursementService;
 
-    public RequestServlet(ObjectMapper mapper, UserService userService, TokenService tokenService, ReimbursementService reimbursementService) {
+    public RequestServlet(ObjectMapper mapper, TokenService tokenService, ReimbursementService reimbursementService) {
         this.mapper = mapper;
-        this.userService = userService;
+
         this.tokenService = tokenService;
 
         this.reimbursementService = reimbursementService;
     }
+
+    public RequestServlet(ObjectMapper mapper, ReimbursementService reimbursementService, TokenService tokenService) {
+        this.mapper = mapper;
+        this.reimbursementService = reimbursementService;
+        this.tokenService = tokenService;
+
+    }
+
+
 
     //This is used to create a request
     @Override
