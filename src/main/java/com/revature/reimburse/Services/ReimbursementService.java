@@ -26,7 +26,7 @@ public class ReimbursementService {
         try {
             mReimbDAO.save(r);
         } catch(SQLException se) {
-            logger.fine("SQL Update Issue: "+se.getMessage()+
+            logger.warning("SQL Update Issue: "+se.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
         }
     }
@@ -43,7 +43,7 @@ public class ReimbursementService {
         try {
             mReimbDAO.updateStatus(r, Status.APPROVED, resolver);
         } catch (SQLException se) {
-            logger.fine("SQL Update Issue: "+se.getMessage()+
+            logger.warning("SQL Update Issue: "+se.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
         }
     }
@@ -52,7 +52,7 @@ public class ReimbursementService {
         try {
             mReimbDAO.updateStatus(r, Status.DENIED, resolver);
         }  catch (SQLException se) {
-            logger.fine("SQL Update Issue: "+se.getMessage()+
+            logger.warning("SQL Update Issue: "+se.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
         }
     }
