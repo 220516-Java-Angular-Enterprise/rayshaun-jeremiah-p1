@@ -81,7 +81,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Initiating GET Request with following info\n"+
-                mapper.writeValueAsString(req));
+                req.toString());
         PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
         logger.info(requester.getUsername()+" is trying to view user data with an Authorization code");
         if(!requester.getRole().equals(Users.Roles.ADMIN)) {
@@ -98,7 +98,11 @@ public class UserServlet extends HttpServlet {
         }
 
         resp.setContentType("application/json");
-        if (l_u.isEmpty()) resp.getWriter().write(mapper.writeValueAsString("No users available"));
-        else resp.getWriter().write(mapper.writeValueAsString(l_u.stream().toString()));
+        StringBuilder sb = new StringBuilder();
+        if (l_u.isEmpty()) resp.getWriter().write("<h1>No users available</h1>");
+        else {
+            l_u.forEach(i-> sb.append(i.getUsername()).append(" ").append(i.getRoles().name()).append("\n"));
+            resp.getWriter().write(new String(sb));
+        }
     }
 }
