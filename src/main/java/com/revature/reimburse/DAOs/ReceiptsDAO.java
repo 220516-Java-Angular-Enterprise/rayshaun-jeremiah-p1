@@ -1,7 +1,7 @@
 package com.revature.reimburse.DAOs;
 
 import com.revature.reimburse.models.Users;
-import com.revature.reimburse.util.database.DatabaseConnector;
+import com.revature.reimburse.util.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,7 @@ public class ReceiptsDAO {
     private static final Logger logger = Logger.getLogger(ReceiptsDAO.class.getName());
 
     public String getRecieptByUser(Users user)throws SQLException {
-        Connection con = DatabaseConnector.getInstance().getCon();
+        Connection con = DatabaseConnection.getInstance().getCon();
 
         PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ?");
         ps.setString(1,user.getUserID());
@@ -31,7 +31,7 @@ public class ReceiptsDAO {
     }
 
     public List<ResultSet> getAllUserReciepts(Users users)throws SQLException{
-        Connection con = DatabaseConnector.getInstance().getCon();
+        Connection con = DatabaseConnection.getInstance().getCon();
         List<ResultSet> allReciepts = new ArrayList<>();
         PreparedStatement ps = con.prepareStatement("SELECT * FROM receipt WHERE user_id = ?");
         ps.setString(1,users.getUserID());
