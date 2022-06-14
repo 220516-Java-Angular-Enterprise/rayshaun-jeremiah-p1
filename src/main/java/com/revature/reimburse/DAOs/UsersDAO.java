@@ -3,10 +3,7 @@ package com.revature.reimburse.DAOs;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
 import com.revature.reimburse.util.database.DatabaseConnection;
-import org.postgresql.core.ConnectionFactory;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,11 +15,10 @@ import java.util.logging.Logger;
 public class UsersDAO implements CrudDAO<Users>{
     private static final Logger logger = Logger.getLogger(UsersDAO.class.getName());
 
-    Connection con =  DatabaseConnection.getCon();
     @Override
     public void save(Users obj) throws SQLException{
         logger.info("Saving user " + obj.getUserID());
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("INSERT INTO users (user_id,username,email,password,given_name,surname) VALUES (?,?,?,?,?,?)");
             ps.setString(1, obj.getUserID());
             ps.setString(2, obj.getUsername());
@@ -39,7 +35,7 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public void update(Users obj) throws SQLException{
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()) {
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE users SET\n" +
                             "(username, email, password, given_name, surname, is_active, role_id) =\n" +
@@ -64,7 +60,7 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public void delete(Users obj) throws SQLException {
-        try {
+        try  (Connection con = DatabaseConnection.getInstance().getCon()) {
             PreparedStatement ps = con.prepareStatement("DELETE FROM users WHERE (user_id) = (?) ");
             ps.setString(1, obj.getUserID());
             logger.info("Deleting user "+obj.getUserID());
@@ -77,7 +73,7 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public Users getByID(String id) throws SQLException {
-        try {
+        try  (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE (user_id) = (?)");
             ps.setString(1, id);
             ps.executeUpdate();
@@ -95,7 +91,7 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public Users getObject(ResultSet rs) throws SQLException {
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()) {
             Users user = new Users();
 
             user.setUserID(rs.getString("user_id"));
@@ -117,7 +113,7 @@ public class UsersDAO implements CrudDAO<Users>{
 
     @Override
     public List<Users> getAll() throws SQLException {
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()) {
             List<Users> userList = new ArrayList<>();
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
             ResultSet rs = ps.executeQuery();
@@ -140,8 +136,9 @@ public class UsersDAO implements CrudDAO<Users>{
     public boolean doesUserExist(String name) {
         ResultSet rs = null;
 
-        try (PreparedStatement stmt = con.prepareStatement(
-                "SELECT * FROM users WHERE username = ?;")
+        try (Connection con = DatabaseConnection.getInstance().getCon();
+             PreparedStatement stmt = con.prepareStatement(
+                "SELECT * FROM users WHERE username = ?;");
         ) {
            stmt.setString(1, name);
            rs = stmt.executeQuery();
@@ -160,7 +157,8 @@ public class UsersDAO implements CrudDAO<Users>{
     public boolean doesEmailExist(String mail) throws SQLException {
         ResultSet rs = null;
 
-        try (PreparedStatement stmt = con.prepareStatement(
+        try (Connection con = DatabaseConnection.getInstance().getCon();
+             PreparedStatement stmt = con.prepareStatement(
                 "SELECT * FROM users WHERE email = ?;")
         ) {
             stmt.setString(1, mail);
@@ -173,8 +171,10 @@ public class UsersDAO implements CrudDAO<Users>{
         return false;
     }
 
-    public Users getUserByUsernameAndPassword(String username, String password){
-        try(Connection con = DatabaseConnection.getCon()){
+    public Users getUserByUsernameAndPassword(String username, String password) throws InvalidSQLException{
+        try(Connection con = DatabaseConnection.getInstance().getCon()){
+            logger.info("Querying for user "+username+
+                    "\nPassword seen as "+password.substring(0,10)+"...");
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
             ps.setString(1,username);
             ps.setString(2,password);
@@ -185,9 +185,10 @@ public class UsersDAO implements CrudDAO<Users>{
             if (rs.next()){
                 return getObject(rs);
             }
+            else logger.info("No users retrieved");
         }
          catch (SQLException e) {
-            throw new InvalidSQLException("An error occured when trying to retrive for the database");
+            throw new InvalidSQLException("Error querying users table. "+e.getMessage());
         }
 
         return null;

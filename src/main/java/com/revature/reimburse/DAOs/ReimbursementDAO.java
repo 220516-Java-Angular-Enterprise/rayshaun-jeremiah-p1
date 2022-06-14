@@ -1,22 +1,19 @@
 package com.revature.reimburse.DAOs;
 
-import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.database.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     private static final Logger logger = Logger.getLogger(ReimbursementDAO.class.getName());
-    Connection con = DatabaseConnection.getCon();
     @Override
     public void save(Reimbursements obj) throws SQLException {
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id,amount,description,author_id, type_id) VALUES (?,?,?,?,?)");
             ps.setString(1, obj.getReimb_id());
             ps.setDouble(2, obj.getAmount());
@@ -34,7 +31,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
 
     @Override
     public void update(Reimbursements obj) throws SQLException  {
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (amount,submitted,resolved,description,payment_id,author_id,resolver_id,status_id,type_id) = (?,?,?,?,?,?,?,?,?) WHERE reimb_id = ? ");
             ps.setDouble(1, obj.getAmount());
             ps.setTimestamp(2, obj.getSubmitted());
@@ -62,6 +59,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
 
     @Override
     public Reimbursements getByID(String id) throws SQLException {
+        Connection con = DatabaseConnection.getInstance().getCon();
 
         //TODO
         Reimbursements reimbursement = new Reimbursements();
@@ -114,7 +112,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     public List<Reimbursements> getAll() throws SQLException{
         List<Reimbursements> reimburse = new ArrayList<>();
 
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements");
             ResultSet rs = ps.executeQuery();
             logger.info("Retrieving all Reimbursements");
@@ -134,7 +132,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
 
     public boolean updateStatus(Reimbursements r, Reimbursements.Status s, Users u) throws SQLException{
 
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?,NOW(),?) WHERE reimb_id = ?");
             ps.setString(1, s.name());
             //ps.setLong(2,now.getTime());
@@ -154,7 +152,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     public List<Reimbursements> getAllForUser(String id) throws SQLException{
         List<Reimbursements> reimburse = new ArrayList<>();
 
-        try {
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
             PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ?");
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();

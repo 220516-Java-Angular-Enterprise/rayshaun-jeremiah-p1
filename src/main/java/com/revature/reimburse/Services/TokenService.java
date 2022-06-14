@@ -38,7 +38,7 @@ public class TokenService {
         try{
 
             //PrincipalNS strType = Reimbursements.Type.valueOf(type);
-
+            logger.info("Someone is attempting to use token "+token);
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtConfig.getSigningKey())
                     .parseClaimsJws(token)

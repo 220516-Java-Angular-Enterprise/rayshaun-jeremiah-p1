@@ -12,9 +12,6 @@ public class PrincipalNS {
     private String id;
     private String username;
     private Roles roles;
-    private Double amount;
-    private String description;
-    private Timestamp submitted;
 
 
 

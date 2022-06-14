@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class UserServlet extends HttpServlet {
@@ -39,7 +41,7 @@ public class UserServlet extends HttpServlet {
             NewUserRequest userRequest = mapper.readValue(req.getInputStream(),NewUserRequest.class);
             String[] uris = req.getRequestURI().split("/");
 
-            if(uris.length == 4 && uris[3].equals("username")){
+            if(uris.length == 4 && uris[3].equals("view")){
                 PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
 
 
@@ -48,24 +50,12 @@ public class UserServlet extends HttpServlet {
                     return;
                 }
 
-                if(requester.getRole().equals("EMPLOYEE")){
-                    resp.setStatus(200);
-
-
+                if (!requester.getRole().equals(Users.Roles.ADMIN)) {
+                    //resp.setStatus((403));
                     return;
                 }
 
-                if(requester.getRole().equals("ADMIN")){
-                    resp.setStatus(200);
 
-                    return;
-                }
-
-                if(requester.getRole().equals("FINANCE_MANAGER")){
-                    resp.setStatus(200);
-
-                    return;
-                }
             }
             logger.info("Requesting to create new user.");
             Users createdUser = userService.register(userRequest);
@@ -90,6 +80,29 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write("<h1>Users works!</h1>");
+        logger.info("Initiating GET Request with following info\n"+
+                req.toString());
+        PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
+        logger.info(requester.getUsername()+" is trying to view user data with an Authorization code");
+        if(!requester.getRole().equals(Users.Roles.ADMIN)) {
+            resp.setStatus(403);
+            return;
+        }
+
+        List<Users> l_u = null;
+        try{
+            l_u = userService.viewUsers();
+        } catch (SQLException se){
+            logger.warning(ExceptionUtils.getStackTrace(se));
+            return;
+        }
+
+        resp.setContentType("application/json");
+        StringBuilder sb = new StringBuilder();
+        if (l_u.isEmpty()) resp.getWriter().write("<h1>No users available</h1>");
+        else {
+            l_u.forEach(i-> sb.append(i.getUsername()).append(" ").append(i.getRoles().name()).append("\n"));
+            resp.getWriter().write(new String(sb));
+        }
     }
 }
