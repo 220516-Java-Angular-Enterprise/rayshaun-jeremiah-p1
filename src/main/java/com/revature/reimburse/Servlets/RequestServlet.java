@@ -3,6 +3,7 @@ package com.revature.reimburse.Servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 import com.revature.reimburse.DTOs.Request.NewUserRequest;
+import com.revature.reimburse.DTOs.Request.ResolveRequest;
 import com.revature.reimburse.DTOs.responses.PrincipalNS;
 import com.revature.reimburse.Services.ReimbursementService;
 import com.revature.reimburse.Services.TokenService;
@@ -39,55 +40,30 @@ public class RequestServlet extends HttpServlet {
     }
 
 
-
-
-
-
     //This is used to create a request
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
             PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
-            Users user = mapper.readValue(req.getInputStream(), Users.class);
-            NewReimbursementRequest reimburseReq = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
-            //Reimbursements request = mapper.readValue(req.getInputStream(), Reimbursements.class);
-            String token = tokenService.generateToken(requester);
-            String[] uris = req.getRequestURI().split("/");
-            if (requester.getRole().equals("EMPLOYEE")) {
-                resp.setStatus(200);
-
-                    //PrincipalNS empRequest = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
-                    List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements(user);
-                    resp.setHeader("Authorization", token);
-                    resp.getWriter().write(mapper.writeValueAsString(reimbursements));
-                    return;
 
 
-            }
-
-            if (requester.getRole().equals("ADMIN")) {
-                return;
-            }
-
-            if (requester.getRole().equals("FINANCE_MANAGER")) {
-                List<Reimbursements> reimbursement = reimbursementService.getAllReimbursements();
+            if (requester.getRole().equals(Users.Roles.EMPLOYEE)) {
+                NewReimbursementRequest reimburseReq = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
+                Reimbursements request = reimburseReq.takeReimbursement();
+                request.setAuthor_id(requester.getId());
+                reimbursementService.createRequest(request);
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(reimbursement));
+                resp.getWriter().write(mapper.writeValueAsString(request.getReimb_id()));
+                resp.setStatus(200);
                 return;
+
+
             }
-
-             Reimbursements createdRequest = reimbursementService.createRequest(reimburseReq);
-            resp.setStatus(201);
-            resp.setContentType("application/json");
-            resp.getWriter().write(mapper.writeValueAsString(createdRequest));
-
+            else resp.setStatus(403);
 
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
-        } catch (SQLException e) {
-            resp.setStatus(500);
-            e.printStackTrace();
         }
 
     }
@@ -111,44 +87,35 @@ public class RequestServlet extends HttpServlet {
         try {
             reimbursements = requester.getRole().equals(Users.Roles.FINANCE_MANAGER) ?
                     reimbursementService.getAllReimbursements() :
-                    reimbursementService.getAllReimbursements(new Users(requester.getId(), requester.getUsername(), requester.getRole()));
+                    reimbursementService.getAllReimbursements(requester.getId());
             resp.setContentType("application/json");
             if(reimbursements.isEmpty()) resp.getWriter().write("<h1>No current reimbursement requests</h1>");
             else resp.getWriter().write(mapper.writeValueAsString(reimbursements));
         } catch (InvalidSQLException e) {
             logger.warning(ExceptionUtils.getStackTrace(e));
         }
-
-
-
-
-
-
-
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        try{
+        try {
             PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
 
 
-            if(!requester.getRole().equals("FINANCE_MANAGER")){
+            if (!requester.getRole().equals(Users.Roles.FINANCE_MANAGER)) {
                 resp.setStatus(403);
                 return;
             }
+            ResolveRequest resolveReq = mapper.readValue(req.getInputStream(), ResolveRequest.class);
+            reimbursementService.resolveRequest(resolveReq.getRequest_id(), resolveReq.getStatus(), requester.getId());
+            resp.setContentType("application/json");
+            resp.getWriter().write(mapper.writeValueAsString(resolveReq));
             resp.setStatus(200);
-            //String token = tokenService.generateToken(requester);
-            NewReimbursementRequest request = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
-            Reimbursements reimbursement = reimbursementService.resolveReq(request);
-            reimbursementService.confirmRequest(reimbursement,requester.getUsername());
 
         }
         catch(InvalidSQLException e){
 
-            e.printStackTrace();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

@@ -34,22 +34,13 @@ public class ReimbursementService {
         Reimbursements request = r.takeReimbursement();
 
         mReimbDAO.save(request);
-        if(request == null) throw new AuthenticationException("Invalid credentials");
         return request;
 
     }
-    public void confirmRequest(Reimbursements r, String id) {
-        try {
-            mReimbDAO.confirmStatus(r, Status.APPROVED, id);
-        } catch (SQLException se) {
-            logger.warning("SQL Update Issue: "+se.getMessage()+
-                    "\nTrace: "+ ExceptionUtils.getStackTrace(se));
-        }
-    }
 
-    public void approveRequest(Reimbursements r, Users resolver) {
+    public void resolveRequest(String r_ID, Status s, String resolver_id) {
         try {
-            mReimbDAO.updateStatus(r, Status.APPROVED, resolver);
+            mReimbDAO.updateStatus(r_ID, s.name(), resolver_id);
         } catch (SQLException se) {
             logger.warning("SQL Update Issue: "+se.getMessage()+
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
@@ -66,15 +57,6 @@ public class ReimbursementService {
     }
 
 
-    public void denyRequest(Reimbursements r, Users resolver) {
-        try {
-            mReimbDAO.updateStatus(r, Status.DENIED, resolver);
-        }  catch (SQLException se) {
-            logger.warning("SQL Update Issue: "+se.getMessage()+
-                    "\nTrace: "+ ExceptionUtils.getStackTrace(se));
-        }
-    }
-
     public List<Reimbursements> getAllReimbursements() throws InvalidSQLException {
         try {
             return mReimbDAO.getAll();
@@ -84,11 +66,11 @@ public class ReimbursementService {
         }
     }
 
-    public List<Reimbursements> getAllReimbursements(Users author) throws InvalidSQLException {
+    public List<Reimbursements> getAllReimbursements(String authorID) throws InvalidSQLException {
         try {
-            return mReimbDAO.getAllForUser(author.getUserID());
+            return mReimbDAO.getAllForUser(authorID);
         } catch (SQLException se) {
-            logger.info("Failed to gather reimbursement for "+author.getUserID());
+            logger.info("Failed to gather reimbursement for "+authorID);
             throw new InvalidSQLException("Reimbursements Table\n"+se.getMessage(), se);
         }
     }
