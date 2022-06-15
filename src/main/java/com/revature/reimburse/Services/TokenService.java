@@ -29,7 +29,7 @@ public class TokenService {
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getExpiration()))
                 .setSubject(subject.getUsername())
-                .claim("role", subject.getRole())
+                .claim("role", subject.getRole().name())
                 .signWith(jwtConfig.getSigAlg(), jwtConfig.getSigningKey());
         logger.info("Generating token for "+subject.getUsername());
         return tokenBuilder.compact();
@@ -37,13 +37,13 @@ public class TokenService {
     public PrincipalNS extractRequesterDetails(String token){
         try{
 
-            //PrincipalNS strType = Reimbursements.Type.valueOf(type);
-            logger.info("Someone is attempting to use token "+token);
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtConfig.getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();
-            return new PrincipalNS(claims.getId(), claims.getSubject(),claims.get("roles", Users.Roles.class));
+            logger.info("Someone is attempting to use token "+token+
+                    "\nWith "+claims.get("role", String.class)+"privileges.");
+            return new PrincipalNS(claims.getId(), claims.getSubject(), Users.Roles.valueOf(claims.get("role", String.class)));
         }
         catch(Exception e){
             logger.warning("Failed to extract user. "+e.getMessage()+
