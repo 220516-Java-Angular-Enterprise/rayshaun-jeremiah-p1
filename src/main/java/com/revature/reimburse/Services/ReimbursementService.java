@@ -10,6 +10,7 @@ import com.revature.reimburse.models.Reimbursements;
 import com.revature.reimburse.models.Reimbursements.Status;
 import com.revature.reimburse.models.Users;
 import com.revature.reimburse.util.CustomException.AuthenticationException;
+import com.revature.reimburse.util.CustomException.InvalidRequestException;
 import com.revature.reimburse.util.CustomException.InvalidSQLException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -37,6 +38,14 @@ public class ReimbursementService {
         return request;
 
     }
+    public void confirmRequest(Reimbursements r, String id) {
+        try {
+            mReimbDAO.confirmStatus(r, Status.APPROVED, id);
+        } catch (SQLException se) {
+            logger.warning("SQL Update Issue: "+se.getMessage()+
+                    "\nTrace: "+ ExceptionUtils.getStackTrace(se));
+        }
+    }
 
     public void approveRequest(Reimbursements r, Users resolver) {
         try {
@@ -46,6 +55,16 @@ public class ReimbursementService {
                     "\nTrace: "+ ExceptionUtils.getStackTrace(se));
         }
     }
+
+    public Reimbursements resolveReq(NewReimbursementRequest r) throws SQLException {
+
+            Reimbursements reimbursements = mReimbDAO.getByID(r.getReimb_id());
+            if (reimbursements == null) throw new AuthenticationException("Reimbursement does not exist");
+            mReimbDAO.update(reimbursements);
+            return reimbursements;
+
+    }
+
 
     public void denyRequest(Reimbursements r, Users resolver) {
         try {
