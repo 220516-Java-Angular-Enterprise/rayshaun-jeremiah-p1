@@ -63,6 +63,9 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Initiating get request.");
+        PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorizing"));
+
+
         resp.getWriter().write("<h1>Authorizaiton test header </h1>");
     }
 }

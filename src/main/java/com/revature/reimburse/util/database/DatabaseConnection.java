@@ -25,7 +25,7 @@ public class DatabaseConnection {
 
     private DatabaseConnection() {
         try {
-            prop.load(new FileReader("src/main/resources/database/db.properties"));
+            prop.load(new FileReader("C:\\Users\\14844\\Desktop\\OfficialP1\\rayshaun-jeremiah-p1\\src\\main\\resources\\database\\db.properties"));
         } catch(IOException ioe) {
             logger.warning(ExceptionUtils.getStackTrace(ioe));
         }

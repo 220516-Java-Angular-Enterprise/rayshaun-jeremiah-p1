@@ -41,9 +41,11 @@ public class TokenService {
                     .setSigningKey(jwtConfig.getSigningKey())
                     .parseClaimsJws(token)
                     .getBody();
+
             logger.info("Someone is attempting to use token "+token+
                     "\nWith "+claims.get("role", String.class)+"privileges.");
             return new PrincipalNS(claims.getId(), claims.getSubject(), Users.Roles.valueOf(claims.get("role", String.class)));
+
         }
         catch(Exception e){
             logger.warning("Failed to extract user. "+e.getMessage()+

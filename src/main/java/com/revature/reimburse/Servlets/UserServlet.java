@@ -97,11 +97,7 @@ public class UserServlet extends HttpServlet {
         }
 
         resp.setContentType("application/json");
-        StringBuilder sb = new StringBuilder();
         if (l_u.isEmpty()) resp.getWriter().write("<h1>No users available</h1>");
-        else {
-            l_u.forEach(i-> sb.append(i.getUsername()).append(" ").append(i.getRoles().name()).append("\n"));
-            resp.getWriter().write(new String(sb));
-        }
+        else resp.getWriter().write(mapper.writeValueAsString(l_u));
     }
 }
