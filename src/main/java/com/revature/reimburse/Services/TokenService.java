@@ -43,7 +43,7 @@ public class TokenService {
                     .getBody();
 
             logger.info("Someone is attempting to use token "+token+
-                    "\nWith "+claims.get("role", String.class)+"privileges.");
+                    "\nWith "+claims.get("role", String.class)+" privileges.");
             return new PrincipalNS(claims.getId(), claims.getSubject(), Users.Roles.valueOf(claims.get("role", String.class)));
 
         }

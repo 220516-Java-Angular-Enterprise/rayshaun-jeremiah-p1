@@ -4,10 +4,10 @@ import com.revature.reimburse.DTOs.Request.NewReimbursementRequest;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 
 public class Reimbursements {
-
 
 
 
@@ -29,16 +29,11 @@ public class Reimbursements {
         super();
     }
 
-    public Reimbursements(String author_id, String reimb_id, Double amount, String description, Type type, Status status,  Timestamp submitted) {
-        this.author_id = author_id;
-        this.reimb_id = reimb_id;
+    public Reimbursements(Double amount, String description, Type type) {
+        this.reimb_id = UUID.randomUUID().toString();
         this.amount = amount;
         this.description = description;
         this.type = type;
-        this.status = status;
-        this.submitted = submitted;
-
-
     }
 
     public Reimbursements(String reimb_id, Double amount, Timestamp submitted, Timestamp resolved, String description,
