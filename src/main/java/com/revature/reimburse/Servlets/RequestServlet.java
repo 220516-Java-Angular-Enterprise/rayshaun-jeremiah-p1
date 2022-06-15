@@ -50,12 +50,14 @@ public class RequestServlet extends HttpServlet {
             Users user = mapper.readValue(req.getInputStream(), Users.class);
             NewReimbursementRequest reimburseReq = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
             //Reimbursements request = mapper.readValue(req.getInputStream(), Reimbursements.class);
+            String token = tokenService.generateToken(requester);
             String[] uris = req.getRequestURI().split("/");
             if (requester.getRole().equals("EMPLOYEE")) {
                 resp.setStatus(200);
 
-                    PrincipalNS empRequest = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
+                    //PrincipalNS empRequest = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
                     List<Reimbursements> reimbursements = reimbursementService.getAllReimbursements(user);
+                    resp.setHeader("Authorization", token);
                     resp.getWriter().write(mapper.writeValueAsString(reimbursements));
                     return;
 
@@ -119,5 +121,31 @@ public class RequestServlet extends HttpServlet {
 
 
 
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        try{
+            PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
+
+
+            if(!requester.getRole().equals("FINANCE_MANAGER")){
+                resp.setStatus(403);
+                return;
+            }
+            resp.setStatus(200);
+            //String token = tokenService.generateToken(requester);
+            NewReimbursementRequest request = mapper.readValue(req.getInputStream(),NewReimbursementRequest.class);
+            Reimbursements reimbursement = reimbursementService.resolveReq(request);
+            reimbursementService.confirmRequest(reimbursement,requester.getUsername());
+
+        }
+        catch(InvalidSQLException e){
+
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

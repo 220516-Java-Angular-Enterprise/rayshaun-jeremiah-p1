@@ -146,6 +146,22 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
         }
     }
 
+    public boolean confirmStatus(Reimbursements r, Reimbursements.Status s, String resolver_id) throws SQLException{
+
+        try (Connection con = DatabaseConnection.getInstance().getCon()){
+            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?,NOW(),?) WHERE reimb_id = ?");
+            ps.setString(1, s.name());
+            //ps.setLong(2,now.getTime());
+            ps.setString(2, resolver_id);
+            ps.setString(3, r.getReimb_id());
+            logger.info("Successfully updated");
+            return true;
+        } catch(SQLException se) {
+            logger.info("Failed to update reimbursements row "+r.getReimb_id());
+            throw se;
+        }
+    }
+
 
 
     //**** This is to get all the reimbursements for the user who is logged in ****

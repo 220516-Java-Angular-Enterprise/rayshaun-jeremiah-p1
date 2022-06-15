@@ -30,7 +30,7 @@ public class ContextLoaderListener implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(RSA.class.getName());
     static {
         try {
-            FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
+            FileInputStream logConfig = new FileInputStream("C:\\Users\\14844\\Desktop\\OfficialP1\\rayshaun-jeremiah-p1\\src\\main\\resources\\log.properties");
             LogManager.getLogManager().readConfiguration(logConfig);
         } catch (IOException e) {
             System.err.println("[WARNING]: Could not open log configuration file. Logging not configured.");
