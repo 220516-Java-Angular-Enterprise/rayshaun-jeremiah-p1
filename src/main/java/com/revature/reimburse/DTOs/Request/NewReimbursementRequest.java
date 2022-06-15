@@ -14,7 +14,7 @@ public class NewReimbursementRequest {
     private Double amount;
     private String description;
     private Reimbursements.Type type;
-    private Reimbursements.Status status = Reimbursements.Status.PENDING;
+    private Reimbursements.Status status;
     private String email;
     private Timestamp submitted;
 
@@ -25,15 +25,10 @@ public class NewReimbursementRequest {
 
 
 
-   public NewReimbursementRequest(String reimb_id,String author_id, Double amount, String description, Reimbursements.Type type,Reimbursements.Status status, String email,Timestamp submitted){
-       this.author_id = author_id;
-       this.reimb_id = reimb_id;
+   public NewReimbursementRequest(Double amount, String description, Reimbursements.Type type){
         this.amount = amount;
         this.description = description;
         this.type = type;
-        this.status = status;
-        this.email = email;
-        this.submitted = submitted;
     }
 
     public String getAuthor_id() {
@@ -100,13 +95,8 @@ public class NewReimbursementRequest {
         this.submitted = submitted;
     }
 
-    public Reimbursements takeReimbursement(){ return new Reimbursements(author_id,
-        reimb_id,
-         amount,
-         description,
-         type,
-         status,
-         submitted);}
+    public Reimbursements takeReimbursement(){
+       return new Reimbursements(amount,description,type);}
 
     @Override
     public String toString() {
@@ -117,7 +107,6 @@ public class NewReimbursementRequest {
                 ", description='" + description + '\'' +
                 ", type=" + type +
                 ", status=" + status +
-                ", email='" + email + '\'' +
                 ", submitted=" + submitted +
                 '}';
     }

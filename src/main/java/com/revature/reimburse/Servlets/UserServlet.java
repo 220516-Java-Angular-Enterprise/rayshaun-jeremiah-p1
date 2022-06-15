@@ -39,24 +39,7 @@ public class UserServlet extends HttpServlet {
 
         try{
             NewUserRequest userRequest = mapper.readValue(req.getInputStream(),NewUserRequest.class);
-            String[] uris = req.getRequestURI().split("/");
 
-            if(uris.length == 4 && uris[3].equals("view")){
-                PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
-
-
-                if(requester == null){
-                    resp.setStatus(401);
-                    return;
-                }
-
-                if (!requester.getRole().equals(Users.Roles.ADMIN)) {
-                    //resp.setStatus((403));
-                    return;
-                }
-
-
-            }
             logger.info("Requesting to create new user.");
             Users createdUser = userService.register(userRequest);
             resp.setStatus(201);

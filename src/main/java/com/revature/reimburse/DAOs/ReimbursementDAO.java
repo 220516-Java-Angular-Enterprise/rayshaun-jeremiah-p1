@@ -14,12 +14,12 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     @Override
     public void save(Reimbursements obj) throws SQLException {
         try (Connection con = DatabaseConnection.getInstance().getCon()){
-            PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id,amount,description,author_id, type_id) VALUES (?,?,?,?,?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id,amount,description,author_id, type_id) VALUES (?,?,?,?,?::\"reimb_type\")");
             ps.setString(1, obj.getReimb_id());
             ps.setDouble(2, obj.getAmount());
             ps.setString(3, obj.getDescription());
             ps.setString(4, obj.getAuthor_id());
-            ps.setString(5, obj.getType().name());
+            ps.setString(5, String.format("%s",obj.getType().name()));
             ps.executeUpdate();
             logger.info("Updated Reimbursement table with object: "+obj.toString());
         } catch(SQLException se) {
@@ -32,7 +32,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     @Override
     public void update(Reimbursements obj) throws SQLException  {
         try (Connection con = DatabaseConnection.getInstance().getCon()){
-            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (amount,submitted,resolved,description,payment_id,author_id,resolver_id,status_id,type_id) = (?,?,?,?,?,?,?,?,?) WHERE reimb_id = ? ");
+            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (amount,submitted,resolved,description,payment_id,author_id,resolver_id,status_id,type_id) = (?,?,?,?,?,?,?,?,?) WHERE reimb_id = ?::\"reimb_type\") ");
             ps.setDouble(1, obj.getAmount());
             ps.setTimestamp(2, obj.getSubmitted());
             ps.setTimestamp(3, obj.getResolved());
@@ -64,7 +64,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
         //TODO
         Reimbursements reimbursement = new Reimbursements();
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE reimb_id = ? ");
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE reimb_id = ?::\"reimb_type\") ");
         ps.setString(1,id);
         ps.executeUpdate();
         ResultSet rs = ps.getResultSet();
@@ -130,18 +130,18 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     }
 
 
-    public boolean updateStatus(Reimbursements r, Reimbursements.Status s, Users u) throws SQLException{
+    public boolean updateStatus(String reqID, String s, String uID) throws SQLException{
 
         try (Connection con = DatabaseConnection.getInstance().getCon()){
-            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?,NOW(),?) WHERE reimb_id = ?");
-            ps.setString(1, s.name());
-            //ps.setLong(2,now.getTime());
-            ps.setString(2, u.getUserID());
-            ps.setString(3, r.getReimb_id());
+            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?::\"reimb_status\",NOW(),?) WHERE reimb_id = ?");
+            ps.setString(1, s);
+            ps.setString(2, uID);
+            ps.setString(3, reqID);
             logger.info("Successfully updated");
+            ps.executeUpdate();
             return true;
         } catch(SQLException se) {
-            logger.info("Failed to update reimbursements row "+r.getReimb_id());
+            logger.info("Failed to update reimbursements row "+reqID);
             throw se;
         }
     }
@@ -149,7 +149,7 @@ public class ReimbursementDAO implements CrudDAO<Reimbursements> {
     public boolean confirmStatus(Reimbursements r, Reimbursements.Status s, String resolver_id) throws SQLException{
 
         try (Connection con = DatabaseConnection.getInstance().getCon()){
-            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?,NOW(),?) WHERE reimb_id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE reimbursements SET (status_id,resolved,resolver_id) = (?,NOW(),?) WHERE reimb_id = ?)");
             ps.setString(1, s.name());
             //ps.setLong(2,now.getTime());
             ps.setString(2, resolver_id);

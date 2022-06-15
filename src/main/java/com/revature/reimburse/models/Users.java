@@ -21,10 +21,6 @@ public class Users {
 
     public Users() {}
 
-    public Users(String id, String uName, Roles r) {
-        userID = id; username = uName; roles = r;
-    }
-
     public Users(String username, String password, String email, String fName, String sName) {
         userID = UUID.randomUUID().toString();
        this.username = username;
@@ -120,7 +116,7 @@ public class Users {
         return "Users{" +
                 "userID='" + userID + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='*****'" +
                 ", email='" + email + '\'' +
                 ", givenName='" + givenName + '\'' +
                 ", surName='" + surName + '\'' +
