@@ -21,7 +21,7 @@ public class RSA {
     private final Decoder decoder = Base64.getDecoder();
 
     public static RSA getKey() throws KeyCreationException {
-        File f = new File("C:\\Users\\14844\\Desktop\\OfficialP1\\rayshaun-jeremiah-p1\\src\\main\\resources\\public.key");
+        File f = new File("src/main/resources/public.key");
 
         if (f.exists()) {
             try(FileReader fout = new FileReader(f)) {

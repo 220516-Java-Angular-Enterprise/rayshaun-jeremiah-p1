@@ -10,7 +10,7 @@ import javax.xml.datatype.DatatypeFactory;
 import java.security.Key;
 
 public class JwtConfig {
-    private final String salt = "1234egdhrt";
+    private final String salt = "akduftjkdandkekjidgngnakdjifidanakldpxclknaadjkgn";
     private int expiration = 60 * 60 * 1000;
 
     private final SignatureAlgorithm sigAlg = SignatureAlgorithm.HS256;
