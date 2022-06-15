@@ -80,8 +80,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Initiating GET Request with following info\n"+
-                req.toString());
+        logger.info("Initiating GET Request with following info");
         PrincipalNS requester = tokenService.extractRequesterDetails(req.getHeader("Authorization"));
         logger.info(requester.getUsername()+" is trying to view user data with an Authorization code");
         if(!requester.getRole().equals(Users.Roles.ADMIN)) {
