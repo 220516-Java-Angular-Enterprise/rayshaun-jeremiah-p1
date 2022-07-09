@@ -29,11 +29,15 @@ import java.util.logging.Logger;
 public class ContextLoaderListener implements ServletContextListener {
     private static final Logger logger = Logger.getLogger(RSA.class.getName());
     static {
-        try {
-            FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties");
+        try (FileInputStream logConfig = new FileInputStream("src/main/resources/log.properties")) {
             LogManager.getLogManager().readConfiguration(logConfig);
-        } catch (IOException e) {
-            System.err.println("[WARNING]: Could not open log configuration file. Logging not configured.");
+            Logger.getLogger("").addHandler(new FileHandler(
+                    String.format("logs/ers-%s.log", new Date(new java.util.Date().getTime())),
+                    true
+            ));
+        } catch(IOException fnf) {
+            System.err.println("[WARNING]: Could not open log configuration file. Logging to file not configured.\n" +
+                    "Trace: "+ ExceptionUtils.getStackTrace(fnf));
         }
     }
 
@@ -43,8 +47,9 @@ public class ContextLoaderListener implements ServletContextListener {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            UserServlet userServlet = new UserServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
-            AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UsersDAO(), RSA.getKey()), new TokenService(new JwtConfig()));
+            RSA keys = RSA.getKey();
+            UserServlet userServlet = new UserServlet(mapper, new UserService(new UsersDAO(), keys), new TokenService(new JwtConfig()));
+            AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UsersDAO(), keys), new TokenService(new JwtConfig()));
             RequestServlet reqServlet = new RequestServlet(mapper, new ReimbursementService(new ReimbursementDAO()),new TokenService(new JwtConfig()));
             ServletContext context = sce.getServletContext();
             context.addServlet("UserServlet", userServlet).addMapping("/users/*");
